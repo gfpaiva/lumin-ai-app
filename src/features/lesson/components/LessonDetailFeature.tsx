@@ -1,5 +1,5 @@
 import { Button } from "@/src/components/button";
-import { GenericBottomSheet } from "@/src/components/generic-bottom-sheet";
+import { RecalibrateBottomSheet } from "./RecalibrateBottomSheet";
 import { LayoutHeader } from "@/src/components/layout-header";
 import { ScreenBackground } from "@/src/components/screen-background";
 import { Pressable } from "@/src/components/ui/pressable";
@@ -23,9 +23,22 @@ export function LessonDetailFeature({ lessonId }: LessonDetailFeatureProps) {
     saveChanges,
     toggleActivityCompletion,
     removeActivity,
+    recalibrateActivity,
+    isRecalibrating,
   } = useLessonDetailViewModel(lessonId);
 
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const [selectedActivityId, setSelectedActivityId] = useState<string | null>(null);
+
+  const handleOpenRecalibrate = (activityId: string) => {
+    setSelectedActivityId(activityId);
+    setIsBottomSheetOpen(true);
+  };
+
+  const handleCloseRecalibrate = () => {
+    setIsBottomSheetOpen(false);
+    setSelectedActivityId(null);
+  };
 
   if (!lesson) {
     return (
@@ -100,7 +113,7 @@ export function LessonDetailFeature({ lessonId }: LessonDetailFeatureProps) {
                   ) : (
                     <>
                       <Pressable
-                        onPress={() => setIsBottomSheetOpen(true)}
+                        onPress={() => handleOpenRecalibrate(activity.id)}
                         className="flex-row items-center border border-surface-neutral bg-transparent rounded-full py-2 px-4 self-start"
                       >
                         <Text className="text-foreground font-medium">
@@ -132,16 +145,13 @@ export function LessonDetailFeature({ lessonId }: LessonDetailFeatureProps) {
         </Button>
       </View>
 
-      <GenericBottomSheet
+      <RecalibrateBottomSheet
         isOpen={isBottomSheetOpen}
-        onClose={() => setIsBottomSheetOpen(false)}
-        title="Recalibrar Exercício"
-      >
-        <Text className="text-muted-foreground">
-          [Placeholder] Aqui ficarão as opções para recalibrar o exercício com a
-          IA.
-        </Text>
-      </GenericBottomSheet>
+        onClose={handleCloseRecalibrate}
+        activityId={selectedActivityId}
+        onRecalibrate={recalibrateActivity}
+        isRecalibrating={isRecalibrating}
+      />
     </ScreenBackground>
   );
 }

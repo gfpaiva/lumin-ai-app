@@ -39,7 +39,7 @@ export default function RootLayout() {
         <Stack
           screenOptions={{
             headerShown: false,
-            contentStyle: { backgroundColor: "transparent" },
+            contentStyle: { backgroundColor: "#000" },
           }}
         />
       </GluestackUIProvider>

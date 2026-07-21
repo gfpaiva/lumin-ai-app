@@ -14,6 +14,7 @@ interface FormInputProps {
   placeholder?: string;
   keyboardType?: KeyboardTypeOptions;
   className?: string;
+  multiline?: boolean;
 }
 
 export function FormInput({
@@ -23,6 +24,7 @@ export function FormInput({
   placeholder,
   keyboardType = 'default',
   className = '',
+  multiline = false,
 }: FormInputProps) {
   return (
     <FormControl className={className}>
@@ -37,6 +39,7 @@ export function FormInput({
           onChangeText={onChangeText}
           placeholder={placeholder}
           keyboardType={keyboardType}
+          multiline={multiline}
           className="text-white text-xl font-semibold px-0 py-2 h-auto leading-[1.2] bg-transparent"
           placeholderTextColor="#666"
         />
