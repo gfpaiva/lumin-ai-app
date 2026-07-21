@@ -1,47 +1,29 @@
 import { Box } from "@/src/components/ui/box";
 import { ChevronDownIcon, Icon } from "@/src/components/ui/icon";
-import { Menu, MenuItem, MenuItemLabel } from "@/src/components/ui/menu";
 import { Pressable } from "@/src/components/ui/pressable";
 import { Text } from "react-native";
 
 interface SchoolSelectorProps {
-  selectedSchool: string;
+  selectedSchoolName: string;
+  onPress: () => void;
 }
 
-export function SchoolSelector({ selectedSchool }: SchoolSelectorProps) {
+export function SchoolSelector({ selectedSchoolName, onPress }: SchoolSelectorProps) {
   return (
     <Box className="mb-6">
-      <Menu
-        placement="bottom left"
-        trigger={({ ...triggerProps }) => {
-          return (
-            <Pressable
-              {...triggerProps}
-              className="flex-row items-center self-start bg-card rounded-full px-6 py-4 gap-2 border border-surface-neutral/25"
-            >
-              <Text className="text-foreground font-medium text-base">
-                {selectedSchool}
-              </Text>
-              <Icon
-                as={ChevronDownIcon}
-                size="sm"
-                className="text-muted-foreground"
-              />
-            </Pressable>
-          );
-        }}
+      <Pressable
+        onPress={onPress}
+        className="flex-row items-center self-start bg-card rounded-full px-6 py-4 gap-2 border border-surface-neutral/25"
       >
-        <MenuItem key={selectedSchool} textValue={selectedSchool}>
-          <MenuItemLabel className="text-sm text-foreground">
-            {selectedSchool}
-          </MenuItemLabel>
-        </MenuItem>
-        <MenuItem key="school-2" textValue="EE Professor João">
-          <MenuItemLabel className="text-sm text-foreground">
-            EE Professor João
-          </MenuItemLabel>
-        </MenuItem>
-      </Menu>
+        <Text className="text-foreground font-medium text-base">
+          {selectedSchoolName}
+        </Text>
+        <Icon
+          as={ChevronDownIcon}
+          size="sm"
+          className="text-muted-foreground"
+        />
+      </Pressable>
     </Box>
   );
 }

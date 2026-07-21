@@ -8,6 +8,8 @@ import { BottomAction } from "./BottomAction";
 import { ClassCard } from "./ClassCard";
 import { HomeWelcome } from "./HomeWelcome";
 import { SchoolSelector } from "./SchoolSelector";
+import { SchoolBottomSheet } from "../../school/components/SchoolBottomSheet";
+import { useSchoolViewModel } from "../../school/hooks/useSchoolViewModel";
 
 const MOCK_CLASSES = [
   { id: "1", grade: "2º Ano Ensino Médio", subject: "História" },
@@ -16,9 +18,12 @@ const MOCK_CLASSES = [
 ];
 
 export function HomeFeature() {
-  const [selectedSchool, setSelectedSchool] = useState("EE Mário Covas");
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isBimesterSheetOpen, setIsBimesterSheetOpen] = useState(false);
+  const [isSchoolSheetOpen, setIsSchoolSheetOpen] = useState(false);
+
+  const { selectedSchool } = useSchoolViewModel(isSchoolSheetOpen);
+  const selectedSchoolName = selectedSchool ? selectedSchool.name : 'Selecionar escola';
 
   return (
     <ScreenBackground>
@@ -31,7 +36,10 @@ export function HomeFeature() {
           onPeriodPress={() => setIsBimesterSheetOpen(true)}
         />
 
-        <SchoolSelector selectedSchool={selectedSchool} />
+        <SchoolSelector 
+          selectedSchoolName={selectedSchoolName} 
+          onPress={() => setIsSchoolSheetOpen(true)} 
+        />
 
         <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
           <View>
@@ -65,6 +73,11 @@ export function HomeFeature() {
       <BimesterSelectorBottomSheet 
         isOpen={isBimesterSheetOpen} 
         onClose={() => setIsBimesterSheetOpen(false)} 
+      />
+
+      <SchoolBottomSheet 
+        isOpen={isSchoolSheetOpen}
+        onClose={() => setIsSchoolSheetOpen(false)}
       />
     </ScreenBackground>
   );
