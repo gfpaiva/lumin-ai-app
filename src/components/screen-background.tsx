@@ -1,3 +1,4 @@
+import { Box } from "@/src/components/ui/box";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
@@ -20,7 +21,7 @@ export const ScreenBackground: React.FC<ScreenBackgroundProps> = ({
         locations={[0, 0.61]}
         style={StyleSheet.absoluteFill}
       />
-      {children}
+      <Box className="pt-12 px-6 flex-1">{children}</Box>
     </View>
   );
 };
