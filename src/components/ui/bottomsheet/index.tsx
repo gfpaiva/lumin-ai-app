@@ -112,6 +112,9 @@ export const BottomSheet = forwardRef<BottomSheetRef, IBottomSheetRootProps>(
 
     const handleClose = useCallback(() => {
       Keyboard.dismiss();
+      if (bottomSheetRef.current) {
+        bottomSheetRef.current.close();
+      }
       setCurrentIndex(-1);
     }, []);
 

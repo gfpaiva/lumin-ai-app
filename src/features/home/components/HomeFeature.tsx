@@ -3,51 +3,55 @@ import { BimesterSelectorBottomSheet } from "../../bimester/components/BimesterS
 import { Header } from "@/src/components/header";
 import { ScreenBackground } from "@/src/components/screen-background";
 import { useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { BottomAction } from "./BottomAction";
 import { ClassCard } from "./ClassCard";
 import { HomeWelcome } from "./HomeWelcome";
 import { SchoolSelector } from "./SchoolSelector";
 import { SchoolBottomSheet } from "../../school/components/SchoolBottomSheet";
 import { useSchoolViewModel } from "../../school/hooks/useSchoolViewModel";
-
-const MOCK_CLASSES = [
-  { id: "1", grade: "2º Ano Ensino Médio", subject: "História" },
-  { id: "2", grade: "1º Ano Ensino Médio", subject: "Geografia" },
-  { id: "3", grade: "9º Ano Ensino Fundamental", subject: "Geografia" },
-];
+import { ClassBottomSheet } from "../../class/components/ClassBottomSheet";
+import { useClassStore } from "@/src/infra/store/class.store";
+import { useSchoolStore } from "@/src/infra/store/school.store";
 
 export function HomeFeature() {
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [isClassSheetOpen, setIsClassSheetOpen] = useState(false);
   const [isBimesterSheetOpen, setIsBimesterSheetOpen] = useState(false);
   const [isSchoolSheetOpen, setIsSchoolSheetOpen] = useState(false);
 
   const { selectedSchool } = useSchoolViewModel(isSchoolSheetOpen);
   const selectedSchoolName = selectedSchool ? selectedSchool.name : 'Selecionar escola';
 
+  const { classes } = useClassStore();
+  const { selectedSchoolId } = useSchoolStore();
+
+  const filteredClasses = classes.filter(
+    (cls) => cls.schoolId === selectedSchoolId,
+  );
+
   return (
     <ScreenBackground>
       <View className="flex-1">
         <Header />
 
-        <HomeWelcome 
-          username="Prof. Helena" 
-          currentPeriod="3º Bimestre 2026" 
+        <HomeWelcome
+          username="Prof. Helena"
+          currentPeriod="3º Bimestre 2026"
           onPeriodPress={() => setIsBimesterSheetOpen(true)}
         />
 
-        <SchoolSelector 
-          selectedSchoolName={selectedSchoolName} 
-          onPress={() => setIsSchoolSheetOpen(true)} 
+        <SchoolSelector
+          selectedSchoolName={selectedSchoolName}
+          onPress={() => setIsSchoolSheetOpen(true)}
         />
 
         <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
           <View>
-            {MOCK_CLASSES.map((cls) => (
+            {filteredClasses.map((cls) => (
               <ClassCard
                 key={cls.id}
                 id={cls.id}
-                grade={cls.grade}
+                grade={`${cls.name} Ensino ${cls.educationLevel}`}
                 subject={cls.subject}
                 onPress={() => console.log("Navigating to class", cls.id)}
               />
@@ -55,27 +59,20 @@ export function HomeFeature() {
           </View>
         </ScrollView>
 
-        <BottomAction onPress={() => setIsSheetOpen(true)} />
+        <BottomAction onPress={() => setIsClassSheetOpen(true)} />
       </View>
 
-      <GenericBottomSheet
-        isOpen={isSheetOpen}
-        onClose={() => setIsSheetOpen(false)}
-        title="Nova turma"
-      >
-        <View className="px-4">
-          <Text className="text-white text-base">
-            Fluxo de nova turma em breve
-          </Text>
-        </View>
-      </GenericBottomSheet>
-
-      <BimesterSelectorBottomSheet 
-        isOpen={isBimesterSheetOpen} 
-        onClose={() => setIsBimesterSheetOpen(false)} 
+      <ClassBottomSheet
+        isOpen={isClassSheetOpen}
+        onClose={() => setIsClassSheetOpen(false)}
       />
 
-      <SchoolBottomSheet 
+      <BimesterSelectorBottomSheet
+        isOpen={isBimesterSheetOpen}
+        onClose={() => setIsBimesterSheetOpen(false)}
+      />
+
+      <SchoolBottomSheet
         isOpen={isSchoolSheetOpen}
         onClose={() => setIsSchoolSheetOpen(false)}
       />

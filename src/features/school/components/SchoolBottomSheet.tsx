@@ -1,8 +1,7 @@
-import React from "react";
 import { GenericBottomSheet } from "@/src/components/generic-bottom-sheet";
-import { SchoolListView } from "./SchoolListView";
-import { SchoolFormView } from "./SchoolFormView";
 import { useSchoolViewModel } from "../hooks/useSchoolViewModel";
+import { SchoolFormView } from "./SchoolFormView";
+import { SchoolListView } from "./SchoolListView";
 
 interface SchoolBottomSheetProps {
   isOpen: boolean;
@@ -19,23 +18,19 @@ export function SchoolBottomSheet({ isOpen, onClose }: SchoolBottomSheetProps) {
     handleSaveSchool,
   } = useSchoolViewModel(isOpen);
 
-  const title = activeView === 'list' ? 'Escolas' : 'Cadastrar escola';
+  const title = activeView === "list" ? "Escolas" : "Cadastrar escola";
 
   return (
-    <GenericBottomSheet
-      isOpen={isOpen}
-      onClose={onClose}
-      title={title}
-    >
-      {activeView === 'list' ? (
+    <GenericBottomSheet isOpen={isOpen} onClose={onClose} title={title}>
+      {activeView === "list" ? (
         <SchoolListView
           schools={schools}
           selectedSchoolId={selectedSchoolId}
           onSelectSchool={(id) => handleSelectSchool(id, onClose)}
-          onNewSchool={() => setActiveView('form')}
+          onNewSchool={() => setActiveView("form")}
         />
       ) : (
-        <SchoolFormView onSave={handleSaveSchool} />
+        <SchoolFormView onSave={(data) => handleSaveSchool(data, onClose)} />
       )}
     </GenericBottomSheet>
   );

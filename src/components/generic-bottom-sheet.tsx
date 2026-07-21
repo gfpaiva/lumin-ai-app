@@ -43,15 +43,15 @@ export function GenericBottomSheet({
   );
 
   return (
-    <BottomSheet ref={bottomSheetRef} onClose={onClose}>
+    <BottomSheet ref={bottomSheetRef} onClose={onClose} defaultSnapIndex={0}>
       <BottomSheetPortal
-        snapPoints={["50%", "90%"]}
+        enableDynamicSizing={true}
         enablePanDownToClose
         backgroundClassName="bg-[#1B1B1B]"
         handleIndicatorClassName="bg-neutral-500 w-12 h-1 rounded-full"
         backdropComponent={renderBackdrop}
       >
-        <BottomSheetContent className="bg-[#1B1B1B] flex-1 pb-4">
+        <BottomSheetContent className="bg-[#1B1B1B] pb-4">
           {title && (
             <Text className="text-white font-bold text-4xl mb-4 mt-8">
               {title}
