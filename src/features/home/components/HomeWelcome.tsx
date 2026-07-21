@@ -6,15 +6,16 @@ import { Text } from "react-native";
 interface HomeWelcomeProps {
   username: string;
   currentPeriod: string;
+  onPeriodPress?: () => void;
 }
 
-export function HomeWelcome({ username, currentPeriod }: HomeWelcomeProps) {
+export function HomeWelcome({ username, currentPeriod, onPeriodPress }: HomeWelcomeProps) {
   return (
     <Box className="mb-6">
       <Text className="text-muted-foreground text-lg font-medium mb-1">
         Olá, {username}!
       </Text>
-      <Pressable className="flex-row items-center gap-2">
+      <Pressable onPress={onPeriodPress} className="flex-row items-center gap-2">
         <Text className="text-foreground text-3xl font-bold">
           {currentPeriod}
         </Text>

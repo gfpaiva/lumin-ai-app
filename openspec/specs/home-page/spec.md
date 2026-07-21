@@ -22,15 +22,15 @@ O Header MUST conter a logo do Lumin.AI alinhada à esquerda e um componente de 
 - **THEN** um menu suspenso é aberto exibindo opções como "Logout"
 
 ### Requirement: Saudação e Bimestre
-A tela MUST exibir uma saudação dinâmica com o nome do usuário ("Olá, {username}!") e o bimestre atual selecionado.
+A tela MUST exibir uma saudação dinâmica com o nome do usuário ("Olá, {username}!") e o bimestre atual em andamento. O componente do bimestre atual MUST ser clicável para abrir o BottomSheet de gestão e seleção de bimestres.
 
 #### Scenario: Apresentação da Saudação
 - **WHEN** a tela principal é visualizada
 - **THEN** o texto "Olá, {username}!" (onde {username} é o nome do professor) deve ser exibido na tela
 
 #### Scenario: Interação com o Bimestre
-- **WHEN** a tela principal é visualizada
-- **THEN** o bimestre atual (ex: "3º Bimestre 2026") é exibido junto a um ícone de chevron indicando possibilidade de clique (futuro bottomsheet)
+- **WHEN** o usuário clica no componente do bimestre atual (ex: "3º Bimestre 2026")
+- **THEN** o bottomsheet de gestão de bimestres MUST ser acionado e exibido ao usuário
 
 ### Requirement: Seletor de Escola
 Um seletor dropdown MUST ser exibido permitindo ao professor alterar a escola atual.

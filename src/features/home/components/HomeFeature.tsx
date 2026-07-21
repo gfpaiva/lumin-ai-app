@@ -1,4 +1,5 @@
 import { GenericBottomSheet } from "@/src/components/generic-bottom-sheet";
+import { BimesterSelectorBottomSheet } from "../../bimester/components/BimesterSelectorBottomSheet";
 import { Header } from "@/src/components/header";
 import { ScreenBackground } from "@/src/components/screen-background";
 import { useState } from "react";
@@ -17,13 +18,18 @@ const MOCK_CLASSES = [
 export function HomeFeature() {
   const [selectedSchool, setSelectedSchool] = useState("EE Mário Covas");
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [isBimesterSheetOpen, setIsBimesterSheetOpen] = useState(false);
 
   return (
     <ScreenBackground>
       <View className="flex-1">
         <Header />
 
-        <HomeWelcome username="Prof. Helena" currentPeriod="3º Bimestre 2026" />
+        <HomeWelcome 
+          username="Prof. Helena" 
+          currentPeriod="3º Bimestre 2026" 
+          onPeriodPress={() => setIsBimesterSheetOpen(true)}
+        />
 
         <SchoolSelector selectedSchool={selectedSchool} />
 
@@ -47,14 +53,19 @@ export function HomeFeature() {
       <GenericBottomSheet
         isOpen={isSheetOpen}
         onClose={() => setIsSheetOpen(false)}
-        title="Selecione o bimestre"
+        title="Nova turma"
       >
-        <View className="px-2">
+        <View className="px-4">
           <Text className="text-white text-base">
-            Teste de conteúdo do bottom sheet
+            Fluxo de nova turma em breve
           </Text>
         </View>
       </GenericBottomSheet>
+
+      <BimesterSelectorBottomSheet 
+        isOpen={isBimesterSheetOpen} 
+        onClose={() => setIsBimesterSheetOpen(false)} 
+      />
     </ScreenBackground>
   );
 }
