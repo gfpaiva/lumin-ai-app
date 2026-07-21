@@ -1,7 +1,5 @@
-import { Box } from "@/src/components/ui/box";
-import { ChevronRightIcon, Icon } from "@/src/components/ui/icon";
-import { Pressable } from "@/src/components/ui/pressable";
-import { Text } from "react-native";
+import { HeroHeader } from "@/src/components/hero-header";
+import { ChevronRightIcon } from "@/src/components/ui/icon";
 
 interface HomeWelcomeProps {
   username: string;
@@ -9,22 +7,17 @@ interface HomeWelcomeProps {
   onPeriodPress?: () => void;
 }
 
-export function HomeWelcome({ username, currentPeriod, onPeriodPress }: HomeWelcomeProps) {
+export function HomeWelcome({
+  username,
+  currentPeriod,
+  onPeriodPress,
+}: HomeWelcomeProps) {
   return (
-    <Box className="mb-6">
-      <Text className="text-muted-foreground text-lg font-medium mb-1">
-        Olá, {username}!
-      </Text>
-      <Pressable onPress={onPeriodPress} className="flex-row items-center gap-2">
-        <Text className="text-foreground text-3xl font-bold">
-          {currentPeriod}
-        </Text>
-        <Icon
-          as={ChevronRightIcon}
-          size="md"
-          className="text-foreground mt-1"
-        />
-      </Pressable>
-    </Box>
+    <HeroHeader
+      subtitle={`Olá, ${username}!`}
+      title={currentPeriod}
+      onTitlePress={onPeriodPress}
+      rightIcon={ChevronRightIcon}
+    />
   );
 }

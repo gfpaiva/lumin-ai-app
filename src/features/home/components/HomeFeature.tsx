@@ -13,8 +13,10 @@ import { useSchoolViewModel } from "../../school/hooks/useSchoolViewModel";
 import { ClassBottomSheet } from "../../class/components/ClassBottomSheet";
 import { useClassStore } from "@/src/infra/store/class.store";
 import { useSchoolStore } from "@/src/infra/store/school.store";
+import { useRouter } from "expo-router";
 
 export function HomeFeature() {
+  const router = useRouter();
   const [isClassSheetOpen, setIsClassSheetOpen] = useState(false);
   const [isBimesterSheetOpen, setIsBimesterSheetOpen] = useState(false);
   const [isSchoolSheetOpen, setIsSchoolSheetOpen] = useState(false);
@@ -53,7 +55,7 @@ export function HomeFeature() {
                 id={cls.id}
                 grade={`${cls.name} Ensino ${cls.educationLevel}`}
                 subject={cls.subject}
-                onPress={() => console.log("Navigating to class", cls.id)}
+                onPress={() => router.push(`/class/${cls.id}`)}
               />
             ))}
           </View>
