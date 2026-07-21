@@ -1,7 +1,8 @@
+import { GenericBottomSheet } from "@/src/components/generic-bottom-sheet";
 import { Header } from "@/src/components/header";
 import { ScreenBackground } from "@/src/components/screen-background";
 import { useState } from "react";
-import { ScrollView, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import { BottomAction } from "./BottomAction";
 import { ClassCard } from "./ClassCard";
 import { HomeWelcome } from "./HomeWelcome";
@@ -15,6 +16,7 @@ const MOCK_CLASSES = [
 
 export function HomeFeature() {
   const [selectedSchool, setSelectedSchool] = useState("EE Mário Covas");
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   return (
     <ScreenBackground>
@@ -39,8 +41,20 @@ export function HomeFeature() {
           </View>
         </ScrollView>
 
-        <BottomAction onPress={() => console.log("Register new class")} />
+        <BottomAction onPress={() => setIsSheetOpen(true)} />
       </View>
+
+      <GenericBottomSheet
+        isOpen={isSheetOpen}
+        onClose={() => setIsSheetOpen(false)}
+        title="Selecione o bimestre"
+      >
+        <View className="px-2">
+          <Text className="text-white text-base">
+            Teste de conteúdo do bottom sheet
+          </Text>
+        </View>
+      </GenericBottomSheet>
     </ScreenBackground>
   );
 }

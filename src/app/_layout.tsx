@@ -8,6 +8,7 @@ import {
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { GluestackUIProvider } from "@/src/components/ui/gluestack-ui-provider";
 import "../../global.css";
@@ -33,13 +34,15 @@ export default function RootLayout() {
   }
 
   return (
-    <GluestackUIProvider mode="dark">
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          contentStyle: { backgroundColor: "transparent" },
-        }}
-      />
-    </GluestackUIProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <GluestackUIProvider mode="dark">
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            contentStyle: { backgroundColor: "transparent" },
+          }}
+        />
+      </GluestackUIProvider>
+    </GestureHandlerRootView>
   );
 }
