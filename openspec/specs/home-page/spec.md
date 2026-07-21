@@ -33,13 +33,13 @@ A tela MUST exibir uma saudação dinâmica com o nome do usuário ("Olá, {user
 - **THEN** o bottomsheet de gestão de bimestres MUST ser acionado e exibido ao usuário
 
 ### Requirement: Seletor de Escola
-Um seletor dropdown MUST ser exibido permitindo ao professor alterar a escola atual.
+Um componente de seleção MUST ser exibido permitindo ao professor visualizar a escola atual e abrir a gestão de escolas.
 
-#### Scenario: Seletor Dropdown Exibido
+#### Scenario: Botão do Seletor Exibido
 - **WHEN** a tela principal é visualizada
 - **THEN** um botão/seletor contendo o nome da escola atual (ex: "EE Mário Covas") e um chevron para baixo é visível
 - **AND WHEN** o botão é clicado
-- **THEN** um menu é aberto para seleção das escolas disponíveis
+- **THEN** um bottomsheet de gestão de escolas é acionado e exibido ao usuário
 
 ### Requirement: Lista de Turmas
 A tela MUST listar as turmas do professor naquela escola em formato de cards. Os cards MUST ser passíveis de rolagem caso existam muitas turmas.
