@@ -1,0 +1,58 @@
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css";
+@import "nativewind/theme";
+
+/* ─── Theme: design tokens (single dark theme) ─────────────────────── */
+@layer theme {
+  :root {
+    --background-start: 8 22 82;
+    --background-end: 0 0 0;
+    --primary: 44 54 94;
+    --primary-foreground: 255 255 255;
+    --card: 44 54 94;
+    --card-foreground: 255 255 255;
+    --surface-dark: 27 27 27;
+    --surface-neutral: 39 39 39;
+    --background: 8 22 82;
+    --foreground: 255 255 255;
+    --muted-foreground: 255 255 255 / 0.7;
+    --border: 39 39 39;
+    --secondary: 38 38 38;
+    --secondary-foreground: 250 250 250;
+    --popover: 23 23 23;
+    --popover-foreground: 250 250 250;
+    --muted: 38 38 38;
+    --destructive: 255 100 103;
+    --input: 46 46 46;
+    --accent: 38 38 38;
+    --accent-foreground: 250 250 250;
+    --ring: 115 115 115;
+  }
+}
+
+@theme inline {
+  --font-sans: 'Inter_400Regular', 'Inter_500Medium', 'Inter_600SemiBold', 'Inter_700Bold', sans-serif;
+  --color-primary: rgb(var(--primary));
+  --color-primary-foreground: rgb(var(--primary-foreground));
+  --color-card: rgb(var(--card));
+  --color-card-foreground: rgb(var(--card-foreground));
+  --color-secondary: rgb(var(--secondary));
+  --color-secondary-foreground: rgb(var(--secondary-foreground));
+  --color-background: rgb(var(--background));
+  --color-background-start: rgb(var(--background-start));
+  --color-background-end: rgb(var(--background-end));
+  --color-surface-dark: rgb(var(--surface-dark));
+  --color-surface-neutral: rgb(var(--surface-neutral));
+  --color-popover: rgb(var(--popover));
+  --color-popover-foreground: rgb(var(--popover-foreground));
+  --color-muted: rgb(var(--muted));
+  --color-muted-foreground: rgb(var(--muted-foreground));
+  --color-destructive: rgb(var(--destructive));
+  --color-foreground: rgb(var(--foreground));
+  --color-border: rgb(var(--border));
+  --color-input: rgb(var(--input));
+  --color-ring: rgb(var(--ring));
+  --color-accent: rgb(var(--accent));
+  --color-accent-foreground: rgb(var(--accent-foreground));
+}

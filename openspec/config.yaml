@@ -1,0 +1,19 @@
+# openspec/config.yaml
+schema: spec-driven
+
+context: |
+  Language: Portuguese (pt-BR)
+  All artifacts must be written in Brazilian Portuguese.
+
+  Tech stack: TypeScript, React Native, Expo, React hook form, Zod, Zustand
+  Testing: Jest + React Testing Library
+  UI: Gluestack v3
+
+rules:
+  proposal:
+    - Never make critical and structural decisions alone. Bring suggestions and/or questions for joint decision-making.
+    - If necessary, ask questions to clarify/provide more context.
+  design:
+    - If contracts or collections have been provided, reference them and make them explicit for integration.
+  specs:
+    - Reference existing patterns before inventing new ones
