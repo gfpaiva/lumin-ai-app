@@ -1,18 +1,16 @@
 import { GenericBottomSheet } from "@/src/components/generic-bottom-sheet";
-import { Header } from "@/src/components/header";
-import { HeroHeader } from "@/src/components/hero-header";
 import { ScreenBackground } from "@/src/components/screen-background";
 import {
-  ChevronLeftIcon,
   ChevronRightIcon,
   Icon,
 } from "@/src/components/ui/icon";
-import { Pressable } from "@/src/components/ui/pressable";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import { useClassDetailViewModel } from "../hooks/useClassDetailViewModel";
 import { LessonCard } from "./LessonCard";
+
+import { LayoutHeader } from "@/src/components/layout-header";
 
 interface ClassDetailFeatureProps {
   classId: string;
@@ -28,13 +26,7 @@ export function ClassDetailFeature({ classId }: ClassDetailFeatureProps) {
   return (
     <ScreenBackground>
       <View className="flex-1">
-        <Header />
-
-        <Pressable onPress={() => router.back()} className="mb-4">
-          <Icon as={ChevronLeftIcon} size="xl" className="text-foreground" />
-        </Pressable>
-
-        <HeroHeader
+        <LayoutHeader
           subtitle={`${subject} • ${schoolName}`}
           title={className}
           rightIcon={ChevronRightIcon}
@@ -53,7 +45,7 @@ export function ClassDetailFeature({ classId }: ClassDetailFeatureProps) {
                 lessonNumber={lesson.lessonNumber}
                 title={lesson.title}
                 progressPercentage={lesson.progressPercentage}
-                onPress={() => console.log("Lesson pressed:", lesson.id)}
+                onPress={() => router.push(`/lesson/${lesson.id}`)}
               />
             ))}
           </View>
