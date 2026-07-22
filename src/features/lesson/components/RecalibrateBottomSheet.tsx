@@ -48,17 +48,17 @@ export function RecalibrateBottomSheet({
     }
   }, [isOpen, activityId]);
 
-  const handleRecalibrate = async () => {
+  const handleRecalibrate = () => {
     if (!activityId) return;
 
-    await onRecalibrate({
+    onClose();
+
+    onRecalibrate({
       activityId,
       emphasis,
       complexity,
       observations,
     });
-
-    onClose();
   };
 
   return (

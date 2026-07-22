@@ -33,8 +33,8 @@ export function useLessonDetailViewModel(lessonId: string) {
   const toggleActivityCompletion = (activityId: string) => {
     setLocalActivities((prev) =>
       prev.map((act) =>
-        act.id === activityId ? { ...act, completed: !act.completed } : act
-      )
+        act.id === activityId ? { ...act, completed: !act.completed } : act,
+      ),
     );
   };
 
@@ -47,9 +47,9 @@ export function useLessonDetailViewModel(lessonId: string) {
   const recalibrateActivity = async (params: RecalibrateParams) => {
     setIsRecalibrating(true);
     try {
-      // Simula uma chamada assíncrona de IA (1500ms)
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      
+      // Simula uma chamada assíncrona de IA
+      await new Promise((resolve) => setTimeout(resolve, 7000));
+
       setLocalActivities((prev) =>
         prev.map((act) =>
           act.id === params.activityId
@@ -57,8 +57,8 @@ export function useLessonDetailViewModel(lessonId: string) {
                 ...act,
                 description: `${act.description} (Recalibrado: Ênfase ${params.emphasis}, Complexidade ${params.complexity})`,
               }
-            : act
-        )
+            : act,
+        ),
       );
     } finally {
       setIsRecalibrating(false);
