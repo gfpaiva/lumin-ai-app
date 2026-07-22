@@ -17,3 +17,5 @@ rules:
     - If contracts or collections have been provided, reference them and make them explicit for integration.
   specs:
     - Reference existing patterns before inventing new ones
+  tasks:
+    - Identify the tasks that depend on each other, are coupled, or should be cascaded. Differentiate them from those that can be developed in parallel.
