@@ -1,5 +1,5 @@
-import { HomeFeature } from "@/src/features/home/components/HomeFeature";
+import { SplashScreenFeature } from '@/src/features/splash/components/SplashScreenFeature';
 
 export default function Index() {
-  return <HomeFeature />;
+  return <SplashScreenFeature />;
 }

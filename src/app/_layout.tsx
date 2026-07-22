@@ -40,6 +40,7 @@ export default function RootLayout() {
           screenOptions={{
             headerShown: false,
             contentStyle: { backgroundColor: "#000" },
+            animation: "fade",
           }}
         />
       </GluestackUIProvider>
