@@ -3,7 +3,7 @@ import { LayoutHeader } from "@/src/components/layout-header";
 import { ScreenBackground } from "@/src/components/screen-background";
 import { Pressable } from "@/src/components/ui/pressable";
 import { Tag } from "@/src/components/ui/tag";
-import { Check, X } from "lucide-react-native";
+import { Check, Clock, X } from "lucide-react-native";
 import { useState } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 import Animated, {
@@ -25,7 +25,6 @@ export function LessonDetailFeature({
   const {
     lesson,
     localActivities,
-    classLevel,
     isEditing,
     toggleEditMode,
     saveChanges,
@@ -84,10 +83,27 @@ export function LessonDetailFeature({
             title={lesson.title}
           />
 
-          {lesson.aiSuggestions && (
-            <Tag variant="neutral" size="md" className="mb-6 self-start">
-              {isEditing ? "Modo edição 👀" : "Sugestões geradas com IA ✨"}
-            </Tag>
+          {Boolean(lesson.aiSuggestions) && (
+            <View className="mb-6">
+              <Tag
+                variant="neutral"
+                size="md"
+                className={`self-start ${
+                  typeof lesson.aiSuggestions === "string" &&
+                  lesson.aiSuggestions.trim().length > 0
+                    ? "mb-2"
+                    : ""
+                }`}
+              >
+                {isEditing ? "Modo edição 👀" : "Sugestões geradas com IA ✨"}
+              </Tag>
+              {typeof lesson.aiSuggestions === "string" &&
+                lesson.aiSuggestions.trim().length > 0 && (
+                  <Text className="text-muted-foreground text-sm">
+                    {lesson.aiSuggestions}
+                  </Text>
+                )}
+            </View>
           )}
 
           {lesson.duration && (
@@ -123,42 +139,53 @@ export function LessonDetailFeature({
                     {activity.description}
                   </Text>
 
-                  <View className="flex-row gap-3">
-                    {!isEditing ? (
-                      <Pressable
-                        onPress={() => toggleActivityCompletion(activity.id)}
-                        className={`flex-row items-center border rounded-full py-2 px-4 self-start ${activity.completed ? "border-primary bg-primary/20" : "border-surface-neutral bg-transparent"}`}
-                      >
-                        <Text
-                          className={`font-medium mr-2 ${activity.completed ? "text-primary" : "text-foreground"}`}
+                  <View className="flex-row items-center justify-between gap-3 flex-wrap">
+                    <View className="flex-row items-center gap-3 flex-wrap">
+                      {!isEditing ? (
+                        <Pressable
+                          onPress={() => toggleActivityCompletion(activity.id)}
+                          className={`flex-row items-center border rounded-full py-2 px-4 self-start ${activity.completed ? "border-primary bg-primary/20" : "border-surface-neutral bg-transparent"}`}
                         >
-                          Concluir
+                          <Text
+                            className={`font-medium mr-2 ${activity.completed ? "text-primary" : "text-foreground"}`}
+                          >
+                            Concluir
+                          </Text>
+                          <Check
+                            size={16}
+                            color={activity.completed ? "#3b82f6" : "#fff"}
+                          />
+                        </Pressable>
+                      ) : (
+                        <>
+                          <Pressable
+                            onPress={() => handleOpenRecalibrate(activity.id)}
+                            className="flex-row items-center border border-surface-neutral bg-transparent rounded-full py-2 px-4 self-start"
+                          >
+                            <Text className="text-foreground font-medium">
+                              Recalibrar exercício ✨
+                            </Text>
+                          </Pressable>
+                          <Pressable
+                            onPress={() => removeActivity(activity.id)}
+                            className="flex-row items-center border border-surface-neutral bg-transparent rounded-full py-2 px-4 self-start"
+                          >
+                            <Text className="text-foreground font-medium mr-2">
+                              Excluir
+                            </Text>
+                            <X size={16} color="#fff" />
+                          </Pressable>
+                        </>
+                      )}
+                    </View>
+
+                    {Boolean(activity.duration) && (
+                      <View className="flex-row items-center gap-1.5">
+                        <Clock size={16} color="#9CA3AF" />
+                        <Text className="text-muted-foreground text-sm font-medium">
+                          {activity.duration} min
                         </Text>
-                        <Check
-                          size={16}
-                          color={activity.completed ? "#3b82f6" : "#fff"}
-                        />
-                      </Pressable>
-                    ) : (
-                      <>
-                        <Pressable
-                          onPress={() => handleOpenRecalibrate(activity.id)}
-                          className="flex-row items-center border border-surface-neutral bg-transparent rounded-full py-2 px-4 self-start"
-                        >
-                          <Text className="text-foreground font-medium">
-                            Recalibrar exercício ✨
-                          </Text>
-                        </Pressable>
-                        <Pressable
-                          onPress={() => removeActivity(activity.id)}
-                          className="flex-row items-center border border-surface-neutral bg-transparent rounded-full py-2 px-4 self-start"
-                        >
-                          <Text className="text-foreground font-medium mr-2">
-                            Excluir
-                          </Text>
-                          <X size={16} color="#fff" />
-                        </Pressable>
-                      </>
+                      </View>
                     )}
                   </View>
                 </View>

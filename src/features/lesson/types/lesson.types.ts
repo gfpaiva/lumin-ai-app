@@ -3,6 +3,7 @@ export interface Activity {
   title: string;
   description: string;
   completed?: boolean;
+  duration?: number;
 }
 
 export interface Lesson {
@@ -12,7 +13,7 @@ export interface Lesson {
   progressPercentage: number;
   classId?: string;
   duration?: string;
-  aiSuggestions?: boolean;
+  aiSuggestions?: string;
   activities?: Activity[];
 }
 
@@ -29,6 +30,7 @@ export interface ActivityDto {
   title: string;
   description: string;
   completed?: boolean;
+  duration?: number;
 }
 
 export interface LessonDto {
@@ -37,7 +39,7 @@ export interface LessonDto {
   title: string;
   progressPercentage?: number;
   duration?: string;
-  aiSuggestions?: boolean;
+  aiSuggestions?: string;
   activities?: ActivityDto[];
 }
 
@@ -48,3 +50,4 @@ export interface ClassPlanDto {
   theme: string;
   lessons: LessonDto[];
 }
+

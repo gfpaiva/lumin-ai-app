@@ -13,6 +13,7 @@ export function mapActivityDtoToDomain(dto: ActivityDto): Activity {
     title: dto.title,
     description: dto.description,
     completed: Boolean(dto.completed),
+    duration: dto.duration,
   };
 }
 
