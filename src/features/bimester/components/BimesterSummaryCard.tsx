@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { Text, View } from "react-native";
 import { Bimester } from "../types/bimester.types";
 
 interface BimesterSummaryCardProps {
@@ -13,10 +13,16 @@ export function BimesterSummaryCard({ bimester }: BimesterSummaryCardProps) {
       {/* Conteúdo Lecionado */}
       <View className="flex-row justify-between items-center mb-6">
         <View>
-          <Text className="text-white text-base font-semibold mb-1">Conteúdo lecionado</Text>
-          <Text className="text-muted-foreground text-sm">{progress.totalClasses} aulas totais</Text>
+          <Text className="text-white text-base font-semibold mb-1">
+            Conteúdo lecionado
+          </Text>
+          <Text className="text-muted-foreground text-sm">
+            {progress.totalLessons} aulas totais
+          </Text>
         </View>
-        <Text className="text-white text-base font-bold">{progress.percentage}%</Text>
+        <Text className="text-white text-base font-bold">
+          {(progress.percentage * 100).toFixed(2)}%
+        </Text>
       </View>
 
       {/* Divider */}
@@ -25,10 +31,10 @@ export function BimesterSummaryCard({ bimester }: BimesterSummaryCardProps) {
       {/* Rendimento das Turmas */}
       <View className="flex-row justify-between items-center mb-2">
         <View>
-          <Text className="text-white text-base font-semibold mb-1">Rendimento das turmas</Text>
-          <Text className="text-muted-foreground text-sm">{progress.classesCount} turmas • {progress.subjectsCount} matérias</Text>
+          <Text className="text-muted-foreground text-sm">
+            {progress.classesCount} turmas • {progress.subjectsCount} matérias
+          </Text>
         </View>
-        <Text className="text-white text-base font-bold">{progress.performancePercentage}%</Text>
       </View>
     </View>
   );

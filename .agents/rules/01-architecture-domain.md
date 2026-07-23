@@ -21,9 +21,10 @@ description: Arquitetura geral, DDD, Arquitetura Hexagonal, MVVM com hooks, e Fe
 - `src/app/`: **APENAS** roteamento Expo Router. Zero lógica de negócio ou fetching de dados.
 
 # 4. MVVM — Custom Hooks como ViewModels
-- **Views (Componentes):** Devem ser "dumb". Recebem propriedades e eventos, sem realizar chamadas de API, acesso direto a Zustand (quando global) ou regras de negócio complexas.
+- **Views (Componentes):** Devem ser "dumb". Recebem propriedades e eventos, sem realizar chamadas de API, acesso direto a Zustand (mesmo em stores globais) ou regras de negócio complexas.
 - **ViewModels (Hooks):** Toda orquestração (estados, fetch, submit de parâmetros para IA) vive em `features/[feature]/hooks/use[Nome]ViewModel.ts`.
-- O ViewModel consome as interfaces (Ports) para requisitar ações (ex: pedir para a IA gerar um plano).
+- **Desacoplamento e Injeção de Dependência:** É ESTUDAMENTE PROIBIDO que Views ou ViewModels realizem binds diretos às implementações reais do Zustand via importação (ex. `import { useBimesterStore }`). ViewModels devem receber as Stores abstratas (`StorePorts`) através de Dependency Injection via Default Parameters (ex: `bimesterStore: BimesterStorePort = useBimesterStore`).
+- O ViewModel consome as interfaces (Ports) para requisitar ações (ex: pedir para a IA gerar um plano, ou disparar mutations HTTP).
 
 # 5. Mapeamento de Dados (Data Integrity)
 - Qualquer retorno de API ou de um Adapter simulado deve ser tipado e passar por um Mapper antes de chegar à UI.

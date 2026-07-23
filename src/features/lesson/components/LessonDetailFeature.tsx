@@ -56,7 +56,7 @@ export function LessonDetailFeature({ lessonId }: LessonDetailFeatureProps) {
   }
 
   return (
-    <ScreenBackground isRecalibrating={isRecalibrating}>
+    <ScreenBackground isLoading={isRecalibrating}>
       <Animated.View style={[{ flex: 1 }, contentStyle]}>
         <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
           <LayoutHeader

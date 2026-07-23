@@ -1,20 +1,38 @@
-import { useEffect, useState } from 'react';
-import { useSchoolStore } from '../../../infra/store/school.store';
+import { useCallback, useEffect, useState } from "react";
+import { ClassStorePort } from "../../../common/ports/class.store.port";
+import { HttpPort } from "../../../common/ports/http.port";
+import { SchoolStorePort } from "../../../common/ports/school.store.port";
+import { FetchAdapter } from "../../../infra/http/fetch.adapter";
+import { useClassStore } from "../../../infra/store/class.store";
+import { useSchoolStore } from "../../../infra/store/school.store";
+import { School } from "../types/school.types";
 
-export type ViewState = 'list' | 'form';
+export type ViewState = "list" | "form";
 
-export function useSchoolViewModel(isOpen: boolean) {
-  const [activeView, setActiveView] = useState<ViewState>('list');
-  const { schools, selectedSchoolId, selectSchool, addSchool } = useSchoolStore();
+const defaultHttpAdapter = new FetchAdapter();
+
+export function useSchoolViewModel(
+  isOpen: boolean,
+  schoolStore: SchoolStorePort = useSchoolStore,
+  classStore: ClassStorePort = useClassStore,
+  httpAdapter: HttpPort = defaultHttpAdapter,
+) {
+  const [activeView, setActiveView] = useState<ViewState>("list");
+  const [isCreatingSchool, setIsCreatingSchool] = useState(false);
+  const schools = schoolStore((state) => state.schools);
+  const setSchools = schoolStore((state) => state.setSchools);
+  const selectedSchoolId = schoolStore((state) => state.selectedSchoolId);
+  const selectSchool = schoolStore((state) => state.selectSchool);
+
+  const classes = classStore((state) => state.classes);
 
   const selectedSchool = schools.find((s) => s.id === selectedSchoolId);
 
   // Reset to 'list' view when sheet closes
   useEffect(() => {
     if (!isOpen) {
-      // Pequeno timeout para não dar glitch visual fechando o form
       const timer = setTimeout(() => {
-        setActiveView('list');
+        setActiveView("list");
       }, 300);
       return () => clearTimeout(timer);
     }
@@ -25,33 +43,38 @@ export function useSchoolViewModel(isOpen: boolean) {
     onClose();
   };
 
-  const handleSaveSchool = (
-    data: { name: string; category: string; workload?: string },
-    onClose: () => void,
-  ) => {
-    addSchool({
-      name: data.name,
-      category: data.category,
-      turmasCount: 0,
-    });
+  const handleSaveSchool = useCallback(
+    async (
+      data: { name: string; category: string; workload?: string },
+      onClose: () => void,
+    ) => {
+      setIsCreatingSchool(true);
 
-    // Select the newly created school (it gets a Date.now() id — fetch it after add)
-    // We use the store's getState to grab the latest list synchronously
-    const { schools: updatedSchools } = useSchoolStore.getState();
-    const newSchool = updatedSchools[updatedSchools.length - 1];
-    if (newSchool) {
-      selectSchool(newSchool.id);
-    }
-
-    onClose();
-  };
+      try {
+        const { data: newSchool } = await httpAdapter.post<School>("/schools", {
+          name: data.name,
+          category: data.category,
+        });
+        setSchools([...schools, newSchool]);
+        selectSchool(newSchool.id);
+        onClose();
+      } catch (error) {
+        console.error("Failed to add school", error);
+      } finally {
+        setIsCreatingSchool(false);
+      }
+    },
+    [schools, setSchools, selectSchool, httpAdapter],
+  );
 
   return {
     schools,
+    classes,
     selectedSchoolId,
     selectedSchool,
     activeView,
     setActiveView,
+    isCreatingSchool,
     handleSelectSchool,
     handleSaveSchool,
   };

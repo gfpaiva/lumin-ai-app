@@ -3,11 +3,19 @@ trigger: model_decision
 description: Estado global, Zustand, Simulação de IA, Adapters de IA.
 ---
 
-# 1. Zustand — Micro Stores
+# 1. Zustand — Micro Stores e Injeção de Dependência
 - Evite criar uma "mega store global". Crie micro stores separadas por domínio (ex: `classStore`, `planningStore`).
 - Stores devem ficar em `src/infra/store/[domain].store.ts`.
-- Components e Hooks não devem importar o Zustand (o store final) diretamente de `infra/`. As features devem consumir interfaces (Ports) para requisitar ou ler o estado.
-- **Caso de Uso Principal do Zustand:** Gerenciamento do estado transiente do Drag-and-Drop e rascunhos de aulas antes de persistir.
+- Components e Hooks NÃO DEVEM importar a store diretamente. Crie interfaces "StorePorts" em `src/common/ports/` contendo o estado (ex: `ClassStoreState`) e defina a port com o wildcard genérico de seletor:
+  ```typescript
+  export type ClassStorePort = <U>(selector: (state: ClassStoreState) => U) => U;
+  ```
+- O ViewModel receberá a `StorePort` como parâmetro e usará o seletor para pegar variáveis/funções com tipagem 100% segura sem saber que é do Zustand.
+
+# 2. SWR (Stale-While-Revalidate) e Optimistic UI (Manual)
+- É PROIBIDO o uso de libs de cache de rede como `swr` ou `@tanstack/react-query`. O SWR deve ser conduzido nativamente com Zustand.
+- Para mutations otimistas, a store deve prover métodos com o sufixo `Optimistic` (ex: `completeBimesterOptimistic`), que atualizam a store de forma instantânea e retornam um **snapshot do estado anterior**.
+- Em caso de falha na request, o ViewModel chama o método `rollback(snapshot)` passando o estado anterior devolvido, garantindo atomicidade.
 
 # 2. Arquitetura da IA (Simulação via Port/Adapter)
 - Embora a aplicação simule a IA no momento, ela será integrada a uma API real.

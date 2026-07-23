@@ -1,48 +1,22 @@
 import { create } from 'zustand';
-import { Class } from '../../features/class/types/class.types';
+import { ClassStoreState } from '../../common/ports/class.store.port';
 
-export interface ClassState {
-  classes: Class[];
-  addClass: (cls: Omit<Class, 'id'>) => void;
-}
-
-const MOCK_CLASSES: Class[] = [
-  {
-    id: '1',
-    name: '2º Ano A',
-    subject: 'História',
-    educationLevel: 'Médio',
-    engagementProfile: 'Participativa',
-    learningFormat: 'Visual',
-    schoolId: '1',
-  },
-  {
-    id: '2',
-    name: '1º Ano B',
-    subject: 'Geografia',
-    educationLevel: 'Médio',
-    engagementProfile: 'Focada',
-    learningFormat: 'Teórico',
-    schoolId: '1',
-  },
-  {
-    id: '3',
-    name: '9º Ano C',
-    subject: 'Geografia',
-    educationLevel: 'Fundamental',
-    engagementProfile: 'Apática',
-    learningFormat: 'Manual',
-    schoolId: '2',
-  },
-];
-
-export const useClassStore = create<ClassState>((set) => ({
-  classes: MOCK_CLASSES,
-  addClass: (cls) =>
+export const useClassStore = create<ClassStoreState>((set, get) => ({
+  classes: [],
+  fetchedSchoolIds: [],
+  setClasses: (classes) => set({ classes }),
+  appendClasses: (newClasses) => set((state) => ({ 
+    classes: [...state.classes, ...newClasses] 
+  })),
+  markSchoolAsFetched: (schoolId) => set((state) => ({
+    fetchedSchoolIds: [...new Set([...state.fetchedSchoolIds, schoolId])]
+  })),
+  addClassOptimistic: (cls) => {
+    const previousClasses = get().classes;
     set((state) => ({
-      classes: [
-        ...state.classes,
-        { ...cls, id: String(Date.now()) },
-      ],
-    })),
+      classes: [...state.classes, cls],
+    }));
+    return previousClasses;
+  },
+  rollbackClass: (snapshot) => set({ classes: snapshot }),
 }));

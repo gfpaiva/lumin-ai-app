@@ -1,26 +1,20 @@
 import { create } from 'zustand';
-import { School } from '../../features/school/types/school.types';
+import { SchoolStoreState } from '../../common/ports/school.store.port';
 
-export interface SchoolState {
-  schools: School[];
-  selectedSchoolId: string | null;
-  selectSchool: (id: string) => void;
-  addSchool: (school: Omit<School, 'id'>) => void;
-}
-
-const MOCK_SCHOOLS: School[] = [
-  { id: '1', name: 'EE Mário Covas', category: 'Escola Estadual', turmasCount: 3 },
-  { id: '2', name: 'EE Mário Xis', category: 'Escola Estadual', turmasCount: 2 },
-];
-
-export const useSchoolStore = create<SchoolState>((set) => ({
-  schools: MOCK_SCHOOLS,
-  selectedSchoolId: '1',
+export const useSchoolStore = create<SchoolStoreState>((set, get) => ({
+  schools: [], // initially empty
+  selectedSchoolId: null,
+  setSchools: (schools) => set({ 
+    schools,
+    selectedSchoolId: get().selectedSchoolId || schools[0]?.id || null
+  }),
   selectSchool: (id) => set({ selectedSchoolId: id }),
-  addSchool: (school) => set((state) => ({
-    schools: [
-      ...state.schools,
-      { ...school, id: String(Date.now()) }
-    ]
-  })),
+  addSchoolOptimistic: (school) => {
+    const previousSchools = get().schools;
+    set((state) => ({
+      schools: [...state.schools, school]
+    }));
+    return previousSchools;
+  },
+  rollbackSchool: (snapshot) => set({ schools: snapshot }),
 }));

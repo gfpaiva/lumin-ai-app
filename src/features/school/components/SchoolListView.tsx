@@ -1,7 +1,6 @@
 import { Button } from "@/src/components/button";
 import { CheckIcon, ChevronRightIcon, Icon } from "@/src/components/ui/icon";
 import { Pressable } from "@/src/components/ui/pressable";
-import { useClassStore } from "@/src/infra/store/class.store";
 import { ScrollView, Text, View } from "react-native";
 import { School } from "../types/school.types";
 
@@ -18,8 +17,6 @@ export function SchoolListView({
   onSelectSchool,
   onNewSchool,
 }: SchoolListViewProps) {
-  const { classes } = useClassStore();
-
   return (
     <View className="mt-4">
       {/* Lista com scroll — não ocupa espaço do botão */}
@@ -30,9 +27,6 @@ export function SchoolListView({
       >
         {schools.map((school) => {
           const isSelected = school.id === selectedSchoolId;
-          const classCount = classes.filter(
-            (c) => c.schoolId === school.id,
-          ).length;
 
           return (
             <View key={school.id}>
@@ -46,7 +40,8 @@ export function SchoolListView({
                     {school.name}
                   </Text>
                   <Text className="text-muted-foreground text-sm">
-                    {classCount} {classCount === 1 ? "turma" : "turmas"}
+                    {school.classCount}{" "}
+                    {school.classCount === 1 ? "turma" : "turmas"}
                   </Text>
                 </View>
                 {isSelected && (

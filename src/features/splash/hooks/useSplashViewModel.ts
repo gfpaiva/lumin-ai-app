@@ -6,11 +6,16 @@ import {
   runOnJS,
 } from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
-import { initializationSimulatorAdapter } from '@/src/infra/initialization/initialization.simulator.adapter';
+import { InitializationPort } from '@/src/common/ports/initialization.port';
+import { InitializationHttpAdapter } from '@/src/infra/initialization/initialization.http.adapter';
 
 export type AnimationPhase = 'sequence' | 'pulsing' | 'fadeout' | 'done';
 
-export function useSplashViewModel() {
+const defaultInitializationAdapter = new InitializationHttpAdapter();
+
+export function useSplashViewModel(
+  initializationAdapter: InitializationPort = defaultInitializationAdapter
+) {
   const [animationPhase, setAnimationPhase] = useState<AnimationPhase>('sequence');
   const router = useRouter();
   const containerOpacity = useSharedValue(1);
@@ -45,7 +50,7 @@ export function useSplashViewModel() {
 
   useEffect(() => {
     let isMounted = true;
-    initializationSimulatorAdapter
+    initializationAdapter
       .initialize()
       .then(() => {
         if (!isMounted) return;
@@ -64,7 +69,7 @@ export function useSplashViewModel() {
     return () => {
       isMounted = false;
     };
-  }, [checkAndTriggerFadeOut]);
+  }, [checkAndTriggerFadeOut, initializationAdapter]);
 
   const fadeStyle = useAnimatedStyle(() => ({
     opacity: containerOpacity.value,
