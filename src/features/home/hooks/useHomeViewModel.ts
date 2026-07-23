@@ -26,6 +26,7 @@ export function useHomeViewModel(
   const [isCreatingSchool, setIsCreatingSchool] = useState(false);
   const [isFetchingClasses, setIsFetchingClasses] = useState(false);
 
+  const schools = schoolStore((state) => state.schools);
   const selectedSchoolId = schoolStore((state) => state.selectedSchoolId);
   const classes = classStore((state) => state.classes);
   const fetchedSchoolIds = classStore((state) => state.fetchedSchoolIds);
@@ -33,6 +34,8 @@ export function useHomeViewModel(
   const markSchoolAsFetched = classStore((state) => state.markSchoolAsFetched);
   const bimesters = bimesterStore((state) => state.bimesters);
   const selectedBimesterId = bimesterStore((state) => state.selectedBimesterId);
+
+  const hasSchools = schools.length > 0;
 
   const bimesterTitle = useMemo(() => {
     const selectedBimester = bimesters.find((b) => b.id === selectedBimesterId);
@@ -86,5 +89,6 @@ export function useHomeViewModel(
     isFetchingClasses,
     filteredClasses,
     bimesterTitle,
+    hasSchools,
   };
 }

@@ -1,8 +1,5 @@
-# school-management Specification
+## MODIFIED Requirements
 
-## Purpose
-Gerenciamento de escolas (seleção e cadastro) integrado através de um BottomSheet global.
-## Requirements
 ### Requirement: Gestão de Escolas no BottomSheet
 O sistema MUST apresentar um BottomSheet contendo a lista de escolas disponíveis para seleção e opções de gerenciamento. O BottomSheet MUST aceitar uma prop `initialView` para abertura direta no formulário de cadastro, sem passar pela lista.
 
@@ -21,15 +18,3 @@ O sistema MUST apresentar um BottomSheet contendo a lista de escolas disponívei
 - **THEN** a escola selecionada torna-se a escola atual
 - **AND** o BottomSheet é fechado automaticamente
 - **AND** o estado da aplicação é atualizado refletindo a nova escola selecionada
-
-### Requirement: Cadastro de Novas Escolas
-O BottomSheet MUST permitir o acesso a um fluxo ou formulário para o cadastro de novas escolas pelo usuário. O formulário MUST utilizar os componentes compartilhados `FormInput` e `ChipRadioGroup`.
-
-#### Scenario: Acionamento do Cadastro de Escola
-- **WHEN** o usuário seleciona a opção de adicionar nova escola no BottomSheet
-- **THEN** um formulário para inserção do nome da nova escola é apresentado utilizando o componente `FormInput`
-- **AND** a seleção de categoria utiliza o componente `ChipRadioGroup`
-- **AND WHEN** o usuário preenche os dados e confirma
-- **THEN** a nova escola é salva e adicionada à lista
-- **AND** a nova escola recém-criada é automaticamente selecionada
-

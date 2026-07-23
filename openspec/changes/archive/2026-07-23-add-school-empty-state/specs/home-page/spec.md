@@ -1,8 +1,5 @@
-# home-page Specification
+## MODIFIED Requirements
 
-## Purpose
-TBD - created by archiving change implement-home-page. Update Purpose after archive.
-## Requirements
 ### Requirement: Layout Principal da Tela Home
 A tela home MUST exibir um layout contendo Header, Mensagem de Boas Vindas com o Bimestre, Seletor de Escola, Lista de Turmas e um Botão Flutuante de Nova Turma. A tela MUST estar envolta em um componente de background. A rota `/` (index) MUST exibir primeiramente a splash screen animada antes de renderizar a home, utilizando `router.replace` ao concluir a inicialização.
 
@@ -26,28 +23,6 @@ Quando não houver escolas cadastradas (`hasSchools === false`), a tela MUST exi
 - **THEN** o `SchoolEmptyState` é exibido
 - **AND** o `SchoolSelector`, o `ClassEmptyState` e o `BottomAction` NÃO são exibidos
 
-### Requirement: Header da Aplicação
-O Header MUST conter a logo do Lumin.AI alinhada à esquerda e um componente de Avatar alinhado à direita. O Avatar MUST possuir um menu dropdown acoplado para opções do usuário.
-
-#### Scenario: Visualização da Logo
-- **WHEN** a tela é carregada
-- **THEN** a logo da marca é exibida no canto superior esquerdo
-
-#### Scenario: Dropdown do Avatar
-- **WHEN** o usuário clica no Avatar do canto superior direito
-- **THEN** um menu suspenso é aberto exibindo opções como "Logout"
-
-### Requirement: Saudação e Bimestre
-A tela MUST exibir uma saudação dinâmica com o nome do usuário ("Olá, {username}!") e o bimestre atual em andamento. O componente do bimestre atual MUST ser clicável para abrir o BottomSheet de gestão e seleção de bimestres.
-
-#### Scenario: Apresentação da Saudação
-- **WHEN** a tela principal é visualizada
-- **THEN** o texto "Olá, {username}!" (onde {username} é o nome do professor) deve ser exibido na tela
-
-#### Scenario: Interação com o Bimestre
-- **WHEN** o usuário clica no componente do bimestre atual (ex: "3º Bimestre 2026")
-- **THEN** o bottomsheet de gestão de bimestres MUST ser acionado e exibido ao usuário
-
 ### Requirement: Seletor de Escola
 Um componente de seleção MUST ser exibido permitindo ao professor visualizar a escola atual e abrir a gestão de escolas. O seletor MUST ser ocultado quando não houver escolas cadastradas.
 
@@ -60,23 +35,6 @@ Um componente de seleção MUST ser exibido permitindo ao professor visualizar a
 #### Scenario: Seletor Oculto sem Escolas
 - **WHEN** a tela principal é visualizada e não há escolas cadastradas
 - **THEN** o `SchoolSelector` NÃO é renderizado
-
-### Requirement: Lista de Turmas
-A tela MUST listar as turmas do professor filtradas pela escola atualmente selecionada no `SchoolSelector`, consumindo dados da micro store de turmas. Os cards MUST ser passíveis de rolagem caso existam muitas turmas.
-
-#### Scenario: Renderização dos Cards de Turma Filtrados por Escola
-- **WHEN** a store de turmas possui itens com `schoolId` correspondente à escola selecionada
-- **THEN** apenas os cards dessas turmas são renderizados, mostrando o nome da turma com o nível de ensino (ex: "2º Ano Ensino Médio") e a disciplina ministrada (ex: "História")
-- **AND** cada card possui um ícone de chevron para a direita indicando navegação
-- **AND** a lista é reativa — ao adicionar uma turma à escola selecionada, o card aparece imediatamente
-
-#### Scenario: Troca de Escola Atualiza a Lista
-- **WHEN** o usuário seleciona uma escola diferente no `SchoolSelector`
-- **THEN** a lista de turmas é atualizada imediatamente para exibir apenas turmas com `schoolId` da nova escola selecionada
-
-#### Scenario: Escola Sem Turmas
-- **WHEN** a escola selecionada não possui turmas cadastradas
-- **THEN** a lista de turmas é exibida vazia (sem cards)
 
 ### Requirement: Botão Cadastrar Nova Turma
 A tela MUST exibir fixamente no rodapé da página um botão para acionar o fluxo de criação de nova turma quando houver pelo menos uma escola cadastrada. Ao ser tocado, MUST abrir o BottomSheet de cadastro de turma com formulário funcional.
@@ -93,4 +51,3 @@ A tela MUST exibir fixamente no rodapé da página um botão para acionar o flux
 - **WHEN** o usuário toca no botão "Cadastrar nova turma"
 - **THEN** o BottomSheet com título "Cadastrar turma" é aberto
 - **AND** o formulário multi-step de cadastro é exibido no Step 1
-

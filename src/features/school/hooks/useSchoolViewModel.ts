@@ -13,11 +13,12 @@ const defaultHttpAdapter = new FetchAdapter();
 
 export function useSchoolViewModel(
   isOpen: boolean,
+  initialView: ViewState = "list",
   schoolStore: SchoolStorePort = useSchoolStore,
   classStore: ClassStorePort = useClassStore,
   httpAdapter: HttpPort = defaultHttpAdapter,
 ) {
-  const [activeView, setActiveView] = useState<ViewState>("list");
+  const [activeView, setActiveView] = useState<ViewState>(initialView);
   const [isCreatingSchool, setIsCreatingSchool] = useState(false);
   const schools = schoolStore((state) => state.schools);
   const setSchools = schoolStore((state) => state.setSchools);
@@ -28,15 +29,17 @@ export function useSchoolViewModel(
 
   const selectedSchool = schools.find((s) => s.id === selectedSchoolId);
 
-  // Reset to 'list' view when sheet closes
+  // Set activeView to initialView when sheet opens, reset to 'list' view when sheet closes
   useEffect(() => {
-    if (!isOpen) {
+    if (isOpen) {
+      setActiveView(initialView);
+    } else {
       const timer = setTimeout(() => {
         setActiveView("list");
       }, 300);
       return () => clearTimeout(timer);
     }
-  }, [isOpen]);
+  }, [isOpen, initialView]);
 
   const handleSelectSchool = (id: string, onClose: () => void) => {
     selectSchool(id);

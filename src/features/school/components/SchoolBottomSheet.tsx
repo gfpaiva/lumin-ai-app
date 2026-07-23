@@ -1,6 +1,6 @@
 import { GenericBottomSheet } from "@/src/components/generic-bottom-sheet";
 import { useEffect } from "react";
-import { useSchoolViewModel } from "../hooks/useSchoolViewModel";
+import { useSchoolViewModel, ViewState } from "../hooks/useSchoolViewModel";
 import { SchoolFormView } from "./SchoolFormView";
 import { SchoolListView } from "./SchoolListView";
 
@@ -8,12 +8,14 @@ interface SchoolBottomSheetProps {
   isOpen: boolean;
   onClose: () => void;
   onCreatingSchoolChange?: (isCreating: boolean) => void;
+  initialView?: ViewState;
 }
 
 export function SchoolBottomSheet({
   isOpen,
   onClose,
   onCreatingSchoolChange,
+  initialView = "list",
 }: SchoolBottomSheetProps) {
   const {
     schools,
@@ -24,7 +26,7 @@ export function SchoolBottomSheet({
     isCreatingSchool,
     handleSelectSchool,
     handleSaveSchool,
-  } = useSchoolViewModel(isOpen);
+  } = useSchoolViewModel(isOpen, initialView);
 
   const title = activeView === "list" ? "Escolas" : "Cadastrar escola";
 
