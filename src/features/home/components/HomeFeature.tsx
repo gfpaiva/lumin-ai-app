@@ -8,6 +8,7 @@ import { useSchoolViewModel } from "../../school/hooks/useSchoolViewModel";
 import { useHomeViewModel } from "../hooks/useHomeViewModel";
 import { BottomAction } from "./BottomAction";
 import { ClassCard } from "./ClassCard";
+import { ClassEmptyState } from "./ClassEmptyState";
 import { HomeSkeleton } from "./HomeSkeleton";
 import { HomeWelcome } from "./HomeWelcome";
 import { SchoolSelector } from "./SchoolSelector";
@@ -57,15 +58,19 @@ export function HomeFeature() {
 
             <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
               <View>
-                {filteredClasses.map((cls) => (
-                  <ClassCard
-                    key={cls.id}
-                    id={cls.id}
-                    grade={`${cls.name} Ensino ${cls.educationLevel}`}
-                    subject={cls.subject}
-                    onPress={() => router.push(`/class/${cls.id}`)}
-                  />
-                ))}
+                {filteredClasses.length === 0 ? (
+                  <ClassEmptyState />
+                ) : (
+                  filteredClasses.map((cls) => (
+                    <ClassCard
+                      key={cls.id}
+                      id={cls.id}
+                      grade={`${cls.name} Ensino ${cls.educationLevel}`}
+                      subject={cls.subject}
+                      onPress={() => router.push(`/class/${cls.id}`)}
+                    />
+                  ))
+                )}
               </View>
             </ScrollView>
 

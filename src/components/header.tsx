@@ -1,7 +1,6 @@
 import { Avatar, AvatarFallbackText } from "@/src/components/ui/avatar";
 import { Box } from "@/src/components/ui/box";
 import { ChevronDownIcon, Icon } from "@/src/components/ui/icon";
-import { Menu, MenuItem, MenuItemLabel } from "@/src/components/ui/menu";
 import { Pressable } from "@/src/components/ui/pressable";
 import { LuminLogo } from "./lumin-logo";
 
@@ -17,34 +16,18 @@ export function Header({ username = "Prof.", onLogout }: HeaderProps) {
       <LuminLogo width={80} height={20} color="#505C8E" />
 
       {/* Avatar Menu */}
-      <Menu
-        placement="bottom right"
-        trigger={({ ...triggerProps }) => {
-          return (
-            <Pressable
-              {...triggerProps}
-              className="flex-row items-center bg-card rounded-full pr-3 pl-2 py-2 gap-2 border border-surface-neutral/20"
-            >
-              <Avatar className="h-8 w-8 bg-surface-dark">
-                <AvatarFallbackText className="text-foreground text-xs">
-                  {username}
-                </AvatarFallbackText>
-              </Avatar>
-              <Icon
-                as={ChevronDownIcon}
-                size="sm"
-                className="text-muted-foreground"
-              />
-            </Pressable>
-          );
-        }}
-      >
-        <MenuItem key="logout" textValue="Logout" onPress={onLogout}>
-          <MenuItemLabel className="text-sm text-foreground">
-            Logout
-          </MenuItemLabel>
-        </MenuItem>
-      </Menu>
+      <Pressable className="flex-row items-center bg-card rounded-full pr-3 pl-2 py-2 gap-2 border border-surface-neutral/20">
+        <Avatar className="h-8 w-8 bg-surface-dark">
+          <AvatarFallbackText className="text-foreground text-xs">
+            {username}
+          </AvatarFallbackText>
+        </Avatar>
+        <Icon
+          as={ChevronDownIcon}
+          size="sm"
+          className="text-muted-foreground"
+        />
+      </Pressable>
     </Box>
   );
 }
