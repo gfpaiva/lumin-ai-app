@@ -1,136 +1,35 @@
-import { useState } from "react";
+import { useLessonStore } from "@/src/infra/store/lesson.store";
+import { Activity, ClassPlan, Lesson } from "../types/lesson.types";
 
-export interface Lesson {
-  id: string;
-  lessonNumber: number;
-  title: string;
-  progressPercentage: number;
-  classId?: string;
-  duration?: string;
-  aiSuggestions?: boolean;
-  activities?: Activity[];
-}
+export type { Activity, ClassPlan, Lesson };
 
-export interface Activity {
-  id: string;
-  title: string;
-  description: string;
-  completed?: boolean;
-}
-
-const mockLessons: Lesson[] = [
-  {
-    id: "1",
-    lessonNumber: 1,
-    title: "O mundo antes das revoluções",
-    progressPercentage: 100,
-    classId: "class-1",
-    duration: "4 dias",
-    aiSuggestions: true,
-    activities: [
-      {
-        id: "act-1",
-        title: "Debate: Burguesia Incipiente",
-        description:
-          "Organize um debate sobre o surgimento da burguesia e sua atuação nas transformações",
-      },
-      {
-        id: "act-2",
-        title: "Debate: Burguesia Incipiente",
-        description:
-          "Organize um debate sobre o surgimento da burguesia e sua atuação nas transformações",
-      },
-      {
-        id: "act-3",
-        title: "Debate: Burguesia Incipiente",
-        description:
-          "Organize um debate sobre o surgimento da burguesia e sua atuação nas transformações",
-      },
-      {
-        id: "act-4",
-        title: "Debate: Burguesia Incipiente",
-        description:
-          "Organize um debate sobre o surgimento da burguesia e sua atuação nas transformações",
-      },
-      {
-        id: "act-5",
-        title: "Debate: Burguesia Incipiente",
-        description:
-          "Organize um debate sobre o surgimento da burguesia e sua atuação nas transformações",
-      },
-    ],
-  },
-  {
-    id: "2",
-    lessonNumber: 2,
-    title: "Iluminismo: novas ideias, novos direitos",
-    progressPercentage: 67,
-    classId: "class-1",
-    duration: "4 dias",
-    aiSuggestions: true,
-    activities: [
-      {
-        id: "act-1",
-        title: "Debate: Burguesia Incipiente",
-        description:
-          "Organize um debate sobre o surgimento da burguesia e sua atuação nas transformações",
-      },
-      {
-        id: "act-2",
-        title: "Debate: Burguesia Incipiente",
-        description:
-          "Organize um debate sobre o surgimento da burguesia e sua atuação nas transformações",
-      },
-      {
-        id: "act-3",
-        title: "Debate: Burguesia Incipiente",
-        description:
-          "Organize um debate sobre o surgimento da burguesia e sua atuação nas transformações",
-      },
-      {
-        id: "act-4",
-        title: "Debate: Burguesia Incipiente",
-        description:
-          "Organize um debate sobre o surgimento da burguesia e sua atuação nas transformações",
-      },
-      {
-        id: "act-5",
-        title: "Debate: Burguesia Incipiente",
-        description:
-          "Organize um debate sobre o surgimento da burguesia e sua atuação nas transformações",
-      },
-    ],
-  },
-  {
-    id: "3",
-    lessonNumber: 3,
-    title: "Revolução Inglesa e a limitação do poder real",
-    progressPercentage: 0,
-    classId: "class-1",
-  },
-  {
-    id: "4",
-    lessonNumber: 4,
-    title: "Revolução Industrial: máquinas, fábricas e trabalho",
-    progressPercentage: 0,
-    classId: "class-1",
-  },
-];
-
+/**
+ * @deprecated Use useLessonStore or specific ViewModels (useClassDetailViewModel, useLessonDetailViewModel) instead.
+ */
 export function useLessonViewModel() {
-  const [lessons] = useState<Lesson[]>(mockLessons);
+  const plansByClassAndBimester = useLessonStore(
+    (state) => state.plansByClassAndBimester,
+  );
 
-  const getLessonsByClass = (classId: string) => {
-    // mock behavior: returning all for now
-    return lessons;
+  const getLessonsByClass = (classId: string, bimesterId = "bimester-1") => {
+    const key = `${classId}_${bimesterId}`;
+    return plansByClassAndBimester[key]?.lessons || [];
   };
 
-  const getLessonById = (id: string) => {
-    return lessons.find((l) => l.id === id);
+  const getLessonById = (
+    id: string,
+    classId = "class-1",
+    bimesterId = "bimester-1",
+  ) => {
+    const key = `${classId}_${bimesterId}`;
+    const plan = plansByClassAndBimester[key];
+    return plan?.lessons.find(
+      (l) => l.id === id || String(l.lessonNumber) === String(id),
+    );
   };
 
   return {
-    lessons,
+    plansByClassAndBimester,
     getLessonsByClass,
     getLessonById,
   };

@@ -1,20 +1,27 @@
 import { Button } from "@/src/components/button";
-import { RecalibrateBottomSheet } from "./RecalibrateBottomSheet";
 import { LayoutHeader } from "@/src/components/layout-header";
 import { ScreenBackground } from "@/src/components/screen-background";
 import { Pressable } from "@/src/components/ui/pressable";
 import { Tag } from "@/src/components/ui/tag";
 import { Check, X } from "lucide-react-native";
 import { useState } from "react";
-import { ScrollView, Text, View } from "react-native";
-import Animated, { useAnimatedStyle, withTiming } from "react-native-reanimated";
+import { ActivityIndicator, ScrollView, Text, View } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  withTiming,
+} from "react-native-reanimated";
 import { useLessonDetailViewModel } from "../hooks/useLessonDetailViewModel";
+import { RecalibrateBottomSheet } from "./RecalibrateBottomSheet";
 
 interface LessonDetailFeatureProps {
   lessonId: string;
+  classId?: string;
 }
 
-export function LessonDetailFeature({ lessonId }: LessonDetailFeatureProps) {
+export function LessonDetailFeature({
+  lessonId,
+  classId,
+}: LessonDetailFeatureProps) {
   const {
     lesson,
     localActivities,
@@ -26,10 +33,13 @@ export function LessonDetailFeature({ lessonId }: LessonDetailFeatureProps) {
     removeActivity,
     recalibrateActivity,
     isRecalibrating,
-  } = useLessonDetailViewModel(lessonId);
+    isLoading,
+  } = useLessonDetailViewModel(lessonId, classId);
 
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
-  const [selectedActivityId, setSelectedActivityId] = useState<string | null>(null);
+  const [selectedActivityId, setSelectedActivityId] = useState<string | null>(
+    null,
+  );
 
   const handleOpenRecalibrate = (activityId: string) => {
     setSelectedActivityId(activityId);
@@ -47,6 +57,16 @@ export function LessonDetailFeature({ lessonId }: LessonDetailFeatureProps) {
     };
   });
 
+  if (isLoading && !lesson) {
+    return (
+      <ScreenBackground>
+        <View className="flex-1 items-center justify-center">
+          <ActivityIndicator size="large" color="#3B82F6" />
+        </View>
+      </ScreenBackground>
+    );
+  }
+
   if (!lesson) {
     return (
       <ScreenBackground>
@@ -60,7 +80,7 @@ export function LessonDetailFeature({ lessonId }: LessonDetailFeatureProps) {
       <Animated.View style={[{ flex: 1 }, contentStyle]}>
         <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
           <LayoutHeader
-            subtitle={`Aula ${lesson.lessonNumber}`}
+            subtitle={`Tema ${lesson.lessonNumber}`}
             title={lesson.title}
           />
 
@@ -76,10 +96,11 @@ export function LessonDetailFeature({ lessonId }: LessonDetailFeatureProps) {
                 Tempo de aula para o tema
               </Text>
               <Tag variant="primary" size="lg" className="mb-3">
-                {lesson.duration}
+                {lesson.duration} minutos
               </Tag>
               <Text className="text-muted-foreground text-sm text-center">
-                Baseado em um nível {classLevel} de turma
+                Baseado nos parâmetros de nível de ensino, perfil de engajamento
+                e formato de aprendizagem da turma.
               </Text>
             </View>
           )}

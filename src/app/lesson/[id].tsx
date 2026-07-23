@@ -2,7 +2,7 @@ import { LessonDetailFeature } from "@/src/features/lesson/components/LessonDeta
 import { useLocalSearchParams } from "expo-router";
 
 export default function LessonDetailScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, classId } = useLocalSearchParams<{ id: string; classId?: string }>();
 
-  return <LessonDetailFeature lessonId={id} />;
+  return <LessonDetailFeature lessonId={id} classId={classId} />;
 }
