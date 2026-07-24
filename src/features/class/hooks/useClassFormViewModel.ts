@@ -48,6 +48,9 @@ export function useClassFormViewModel(
   const classes = classStore((state) => state.classes);
   const setClasses = classStore((state) => state.setClasses);
   const selectedSchoolId = schoolStore((state) => state.selectedSchoolId);
+  const incrementClassCount = schoolStore(
+    (state) => state.incrementClassCount,
+  );
 
   // Reset form when bottom sheet closes
   useEffect(() => {
@@ -84,13 +87,21 @@ export function useClassFormViewModel(
 
         // Local update after success
         setClasses([...classes, newClass]);
+        incrementClassCount(selectedSchoolId);
       } catch (error) {
         console.error("Failed to add class", error);
       } finally {
         setIsLoading(false);
       }
     },
-    [selectedSchoolId, formData, classes, setClasses, httpAdapter],
+    [
+      selectedSchoolId,
+      formData,
+      classes,
+      setClasses,
+      httpAdapter,
+      incrementClassCount,
+    ],
   );
 
   const setField = <K extends keyof ClassFormData>(

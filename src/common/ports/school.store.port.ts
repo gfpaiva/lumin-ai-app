@@ -7,6 +7,7 @@ export interface SchoolStoreState {
   selectSchool: (id: string) => void;
   addSchoolOptimistic: (school: School) => School[];
   rollbackSchool: (snapshot: School[]) => void;
+  incrementClassCount: (schoolId: string) => void;
 }
 
 export type SchoolStorePort = <U>(selector: (state: SchoolStoreState) => U) => U;

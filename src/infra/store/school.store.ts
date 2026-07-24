@@ -17,4 +17,12 @@ export const useSchoolStore = create<SchoolStoreState>((set, get) => ({
     return previousSchools;
   },
   rollbackSchool: (snapshot) => set({ schools: snapshot }),
+  incrementClassCount: (schoolId) =>
+    set((state) => ({
+      schools: state.schools.map((school) =>
+        school.id === schoolId
+          ? { ...school, classCount: school.classCount + 1 }
+          : school,
+      ),
+    })),
 }));
