@@ -8,11 +8,16 @@ import {
 } from "../types/lesson.types";
 
 export function mapActivityDtoToDomain(dto: ActivityDto): Activity {
+  const isCompleted =
+    dto.completedAt !== undefined
+      ? Boolean(dto.completedAt)
+      : Boolean(dto.completed);
+
   return {
     id: dto.id,
     title: dto.title,
     description: dto.description,
-    completed: Boolean(dto.completed),
+    completed: isCompleted,
     duration: dto.duration,
   };
 }

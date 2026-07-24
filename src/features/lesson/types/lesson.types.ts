@@ -29,6 +29,7 @@ export interface ActivityDto {
   id: string;
   title: string;
   description: string;
+  completedAt?: string | null;
   completed?: boolean;
   duration?: number;
 }

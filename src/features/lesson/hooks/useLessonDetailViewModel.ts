@@ -3,10 +3,16 @@ import { HttpPort } from "@/src/common/ports/http.port";
 import { LessonStorePort } from "@/src/common/ports/lesson.store.port";
 import { FetchAdapter } from "@/src/infra/http/fetch.adapter";
 import { useBimesterStore } from "@/src/infra/store/bimester.store";
-import { useLessonStore } from "@/src/infra/store/lesson.store";
-import { useCallback, useEffect, useState } from "react";
-import { mapClassPlanDtoToDomain } from "../mappers/class-plan.mapper";
-import { Activity, ClassPlanDto, Lesson } from "../types/lesson.types";
+import {
+  calculateTotalLessonDuration,
+  useLessonStore,
+} from "@/src/infra/store/lesson.store";
+import { useEffect, useState } from "react";
+import {
+  mapActivityDtoToDomain,
+  mapClassPlanDtoToDomain,
+} from "../mappers/class-plan.mapper";
+import { ActivityDto, ClassPlanDto, Lesson } from "../types/lesson.types";
 
 export type RecalibrateParams = {
   activityId: string;
@@ -34,6 +40,16 @@ export function useLessonDetailViewModel(
     (state) => state.plansByClassAndBimester,
   );
   const setPlan = lessonStore((state) => state.setPlan);
+  const updateActivityCompletionOptimistic = lessonStore(
+    (state) => state.updateActivityCompletionOptimistic,
+  );
+  const updateActivityInLesson = lessonStore(
+    (state) => state.updateActivityInLesson,
+  );
+  const updateLessonOptimistic = lessonStore(
+    (state) => state.updateLessonOptimistic,
+  );
+  const rollbackPlan = lessonStore((state) => state.rollbackPlan);
 
   const activeBimesterId =
     selectedBimesterId ||
@@ -45,28 +61,42 @@ export function useLessonDetailViewModel(
   const storeKey = `${targetClassId}_${activeBimesterId}`;
   const plan = plansByClassAndBimester[storeKey];
 
-  const fetchPlanIfNeeded = useCallback(async () => {
-    if (plansByClassAndBimester[storeKey]) return;
-
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await httpAdapter.get<ClassPlanDto>("/class-plans", {
-        params: { classId: targetClassId, bimesterId: activeBimesterId },
+  useEffect(() => {
+    let isMounted = true;
+    if (!plansByClassAndBimester[storeKey]) {
+      queueMicrotask(() => {
+        if (!isMounted) return;
+        setIsLoading(true);
+        setError(null);
       });
-      if (response.data) {
-        const domainPlan = mapClassPlanDtoToDomain(response.data);
-        setPlan(targetClassId, activeBimesterId, domainPlan);
-      }
-    } catch (err: any) {
-      console.error(
-        "Error fetching lesson plan in useLessonDetailViewModel:",
-        err,
-      );
-      setError(err?.message || "Erro ao carregar os dados da aula");
-    } finally {
-      setIsLoading(false);
+      httpAdapter
+        .get<ClassPlanDto>("/class-plans", {
+          params: { classId: targetClassId, bimesterId: activeBimesterId },
+        })
+        .then((response) => {
+          if (isMounted && response.data) {
+            const domainPlan = mapClassPlanDtoToDomain(response.data);
+            setPlan(targetClassId, activeBimesterId, domainPlan);
+          }
+        })
+        .catch((err: any) => {
+          if (isMounted) {
+            console.error(
+              "Error fetching lesson plan in useLessonDetailViewModel:",
+              err,
+            );
+            setError(err?.message || "Erro ao carregar os dados da aula");
+          }
+        })
+        .finally(() => {
+          if (isMounted) {
+            setIsLoading(false);
+          }
+        });
     }
+    return () => {
+      isMounted = false;
+    };
   }, [
     plansByClassAndBimester,
     storeKey,
@@ -76,70 +106,132 @@ export function useLessonDetailViewModel(
     setPlan,
   ]);
 
-  useEffect(() => {
-    fetchPlanIfNeeded();
-  }, [fetchPlanIfNeeded]);
-
   const lesson: Lesson | undefined = plan?.lessons.find(
     (l) =>
       String(l.lessonNumber) === String(lessonIdentifier) ||
       l.id === lessonIdentifier,
   );
 
+  const activities = lesson?.activities ?? [];
   const [isEditing, setIsEditing] = useState(false);
-  const [localActivities, setLocalActivities] = useState<Activity[]>([]);
-
-  useEffect(() => {
-    if (lesson?.activities) {
-      setLocalActivities(lesson.activities);
-    }
-  }, [lesson?.activities]);
 
   const toggleEditMode = () => {
     setIsEditing((prev) => !prev);
   };
 
-  const saveChanges = () => {
-    setIsEditing(false);
-  };
+  const toggleActivityCompletion = async (activityId: string) => {
+    if (!plan || !lesson) return;
 
-  const toggleActivityCompletion = (activityId: string) => {
-    setLocalActivities((prev) =>
-      prev.map((act) =>
-        act.id === activityId ? { ...act, completed: !act.completed } : act,
-      ),
+    const targetActivity = activities.find((act) => act.id === activityId);
+    const newCompleted = targetActivity ? !targetActivity.completed : true;
+    const snapshot = plan;
+
+    updateActivityCompletionOptimistic(
+      targetClassId,
+      activeBimesterId,
+      lessonIdentifier,
+      activityId,
+      newCompleted,
     );
-  };
 
-  const removeActivity = (activityId: string) => {
-    setLocalActivities((prev) => prev.filter((act) => act.id !== activityId));
+    try {
+      const response = await httpAdapter.patch<ClassPlanDto>(
+        `/class-plans/${plan.id}/lessons/${lesson.lessonNumber}/activities/${activityId}`,
+        { completed: newCompleted },
+      );
+
+      if (response.data) {
+        const domainPlan = mapClassPlanDtoToDomain(response.data);
+        setPlan(targetClassId, activeBimesterId, domainPlan);
+      }
+    } catch (err: any) {
+      console.error("Error toggling activity completion:", err);
+      rollbackPlan(targetClassId, activeBimesterId, snapshot);
+      setError(err?.message || "Erro ao atualizar conclusão da atividade");
+    }
   };
 
   const [isRecalibrating, setIsRecalibrating] = useState(false);
 
   const recalibrateActivity = async (params: RecalibrateParams) => {
-    setIsRecalibrating(true);
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 7000));
+    if (!plan || !lesson) return;
 
-      setLocalActivities((prev) =>
-        prev.map((act) =>
-          act.id === params.activityId
-            ? {
-                ...act,
-                description: `${act.description} (Recalibrado: Ênfase ${params.emphasis}, Complexidade ${params.complexity})`,
-              }
-            : act,
-        ),
+    setIsRecalibrating(true);
+    setError(null);
+    try {
+      const response = await httpAdapter.post<ActivityDto>(
+        `/class-plans/${plan.id}/lessons/${lesson.lessonNumber}/activities/${params.activityId}/recalibrate`,
+        {
+          emphasis: params.emphasis,
+          complexity: params.complexity,
+          observations: params.observations,
+        },
       );
+
+      if (response.data) {
+        const updatedActivity = mapActivityDtoToDomain(response.data);
+        updateActivityInLesson(
+          targetClassId,
+          activeBimesterId,
+          lessonIdentifier,
+          updatedActivity,
+        );
+      }
+    } catch (err: any) {
+      console.error("Error recalibrating activity:", err);
+      setError(err?.message || "Erro ao recalibrar atividade");
     } finally {
       setIsRecalibrating(false);
     }
   };
 
+  const removeActivity = (activityId: string) => {
+    if (!plan || !lesson) return;
+
+    const updated = activities.filter((act) => act.id !== activityId);
+    const newDuration = calculateTotalLessonDuration(updated);
+    updateLessonOptimistic(targetClassId, activeBimesterId, lessonIdentifier, {
+      activities: updated,
+      duration: newDuration,
+    });
+  };
+
+  const saveChanges = async () => {
+    if (!plan || !lesson) {
+      setIsEditing(false);
+      return;
+    }
+
+    setIsEditing(false);
+    const snapshot = plan;
+
+    try {
+      const payload = {
+        title: lesson.title,
+        duration: lesson.duration,
+        aiSuggestions: lesson.aiSuggestions,
+        activities: lesson.activities,
+      };
+
+      const response = await httpAdapter.put<ClassPlanDto>(
+        `/class-plans/${plan.id}/lessons/${lesson.lessonNumber}`,
+        payload,
+      );
+
+      if (response.data) {
+        const domainPlan = mapClassPlanDtoToDomain(response.data);
+        setPlan(targetClassId, activeBimesterId, domainPlan);
+      }
+    } catch (err: any) {
+      console.error("Error saving lesson changes:", err);
+      rollbackPlan(targetClassId, activeBimesterId, snapshot);
+      setError(err?.message || "Erro ao salvar alterações da aula");
+    }
+  };
+
   return {
     lesson,
-    localActivities,
+    activities,
     isEditing,
     isRecalibrating,
     isLoading,

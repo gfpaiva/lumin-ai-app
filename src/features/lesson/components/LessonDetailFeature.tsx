@@ -24,7 +24,7 @@ export function LessonDetailFeature({
 }: LessonDetailFeatureProps) {
   const {
     lesson,
-    localActivities,
+    activities,
     isEditing,
     toggleEditMode,
     saveChanges,
@@ -121,13 +121,13 @@ export function LessonDetailFeature({
             </View>
           )}
 
-          {localActivities && localActivities.length > 0 && (
+          {activities && activities.length > 0 && (
             <View className="flex-1">
               <Text className="text-foreground text-xl font-bold mb-4">
-                Exercícios
+                Atividades sugeridas para o tema
               </Text>
 
-              {localActivities.map((activity) => (
+              {activities.map((activity) => (
                 <View
                   key={activity.id}
                   className="mb-4 pt-4 border-t border-t-surface-neutral"
@@ -149,7 +149,7 @@ export function LessonDetailFeature({
                           <Text
                             className={`font-medium mr-2 ${activity.completed ? "text-primary" : "text-foreground"}`}
                           >
-                            Concluir
+                            {activity.completed ? "Concluído" : "Concluir"}
                           </Text>
                           <Check
                             size={16}
@@ -163,7 +163,7 @@ export function LessonDetailFeature({
                             className="flex-row items-center border border-surface-neutral bg-transparent rounded-full py-2 px-4 self-start"
                           >
                             <Text className="text-foreground font-medium">
-                              Recalibrar exercício ✨
+                              Recalibrar atividade ✨
                             </Text>
                           </Pressable>
                           <Pressable

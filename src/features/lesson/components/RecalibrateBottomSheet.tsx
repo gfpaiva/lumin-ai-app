@@ -65,7 +65,7 @@ export function RecalibrateBottomSheet({
     <GenericBottomSheet
       isOpen={isOpen}
       onClose={onClose}
-      title="Recalibrar Exercício"
+      title="Recalibrar Atividade"
     >
       <View className="gap-6 pb-6">
         <ChipRadioGroup
@@ -92,7 +92,7 @@ export function RecalibrateBottomSheet({
 
         <Button onPress={handleRecalibrate} className="mt-4">
           <Text className="text-foreground font-medium text-lg">
-            {isRecalibrating ? "Recalibrando..." : "Recalibrar exercício ✨"}
+            {isRecalibrating ? "Recalibrando..." : "Recalibrar atividade ✨"}
           </Text>
         </Button>
       </View>

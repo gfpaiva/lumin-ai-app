@@ -1,8 +1,6 @@
-import { GenericBottomSheet } from "@/src/components/generic-bottom-sheet";
 import { ScreenBackground } from "@/src/components/screen-background";
 import { ChevronRightIcon } from "@/src/components/ui/icon";
 import { useRouter } from "expo-router";
-import { useState } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 import { useClassDetailViewModel } from "../hooks/useClassDetailViewModel";
 import { LessonCard } from "./LessonCard";
@@ -15,7 +13,6 @@ interface ClassDetailFeatureProps {
 
 export function ClassDetailFeature({ classId }: ClassDetailFeatureProps) {
   const router = useRouter();
-  const [isClassSheetOpen, setIsClassSheetOpen] = useState(false);
 
   const { subject, schoolName, className, themeText, lessons, isLoading } =
     useClassDetailViewModel(classId);
@@ -34,7 +31,7 @@ export function ClassDetailFeature({ classId }: ClassDetailFeatureProps) {
           subtitle={`${subject} • ${schoolName}`}
           title={className}
           rightIcon={ChevronRightIcon}
-          onTitlePress={() => setIsClassSheetOpen(true)}
+          onTitlePress={() => {}}
         />
 
         <Text className="text-foreground text-xl font-medium mb-8 leading-snug">
@@ -63,16 +60,6 @@ export function ClassDetailFeature({ classId }: ClassDetailFeatureProps) {
           </ScrollView>
         )}
       </View>
-
-      <GenericBottomSheet
-        isOpen={isClassSheetOpen}
-        onClose={() => setIsClassSheetOpen(false)}
-        title="Turma"
-      >
-        <Text className="text-foreground p-4">
-          Conteúdo placeholder para detalhes da turma.
-        </Text>
-      </GenericBottomSheet>
     </ScreenBackground>
   );
 }
