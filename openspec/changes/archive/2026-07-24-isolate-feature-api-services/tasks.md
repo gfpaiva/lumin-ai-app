@@ -21,6 +21,6 @@
 
 ## 4. Testes e Validação
 
-- [ ] 4.1 Criar testes unitários em Jest para os novos serviços em `src/features/[feature]/api/*.spec.ts`.
-- [ ] 4.2 Atualizar e executar os testes existentes dos ViewModels garantindo que passam 100%.
-- [ ] 4.3 Executar `pnpm test` e `pnpm type-check` para validar ausência de erros de compilação ou regressões.
+- [x] 4.1 Criar testes unitários em Jest para os novos serviços em `src/features/[feature]/api/*.spec.ts`.
+- [x] 4.2 Atualizar e executar os testes existentes dos ViewModels garantindo que passam 100%.
+- [x] 4.3 Executar `pnpm test` e `pnpm type-check` para validar ausência de erros de compilação ou regressões.
