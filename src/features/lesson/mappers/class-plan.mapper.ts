@@ -18,7 +18,36 @@ export function mapActivityDtoToDomain(dto: ActivityDto): Activity {
     title: dto.title,
     description: dto.description,
     completed: isCompleted,
+    completedAt: dto.completedAt ?? null,
     duration: dto.duration,
+  };
+}
+
+export function mapActivityDomainToDto(activity: Activity): ActivityDto {
+  const completedAt = activity.completed
+    ? activity.completedAt || new Date().toISOString()
+    : null;
+
+  return {
+    id: activity.id,
+    title: activity.title,
+    description: activity.description,
+    duration: activity.duration,
+    completedAt,
+  };
+}
+
+export function mapLessonDomainToDto(lesson: Lesson): Partial<LessonDto> {
+  const durationNum =
+    typeof lesson.duration === "number"
+      ? lesson.duration
+      : Number(lesson.duration) || 0;
+
+  return {
+    title: lesson.title,
+    aiSuggestions: lesson.aiSuggestions,
+    duration: durationNum,
+    activities: (lesson.activities || []).map(mapActivityDomainToDto),
   };
 }
 
@@ -47,7 +76,7 @@ export function mapLessonDtoToDomain(
     title: dto.title,
     progressPercentage,
     classId,
-    duration: dto.duration,
+    duration: dto.duration !== undefined ? String(dto.duration) : undefined,
     aiSuggestions: dto.aiSuggestions,
     activities,
   };

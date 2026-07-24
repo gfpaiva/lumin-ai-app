@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import {
   mapActivityDtoToDomain,
   mapClassPlanDtoToDomain,
+  mapLessonDomainToDto,
 } from "../mappers/class-plan.mapper";
 import { ActivityDto, ClassPlanDto, Lesson } from "../types/lesson.types";
 
@@ -206,12 +207,7 @@ export function useLessonDetailViewModel(
     const snapshot = plan;
 
     try {
-      const payload = {
-        title: lesson.title,
-        duration: lesson.duration,
-        aiSuggestions: lesson.aiSuggestions,
-        activities: lesson.activities,
-      };
+      const payload = mapLessonDomainToDto(lesson);
 
       const response = await httpAdapter.put<ClassPlanDto>(
         `/class-plans/${plan.id}/lessons/${lesson.lessonNumber}`,

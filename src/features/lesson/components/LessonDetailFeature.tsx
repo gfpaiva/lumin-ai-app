@@ -6,10 +6,6 @@ import { Tag } from "@/src/components/ui/tag";
 import { Check, Clock, X } from "lucide-react-native";
 import { useState } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
-import Animated, {
-  useAnimatedStyle,
-  withTiming,
-} from "react-native-reanimated";
 import { useLessonDetailViewModel } from "../hooks/useLessonDetailViewModel";
 import { RecalibrateBottomSheet } from "./RecalibrateBottomSheet";
 
@@ -50,12 +46,6 @@ export function LessonDetailFeature({
     setSelectedActivityId(null);
   };
 
-  const contentStyle = useAnimatedStyle(() => {
-    return {
-      opacity: withTiming(isRecalibrating ? 0 : 1, { duration: 300 }),
-    };
-  });
-
   if (isLoading && !lesson) {
     return (
       <ScreenBackground>
@@ -76,7 +66,7 @@ export function LessonDetailFeature({
 
   return (
     <ScreenBackground isLoading={isRecalibrating}>
-      <Animated.View style={[{ flex: 1 }, contentStyle]}>
+      <View className="flex-1">
         <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
           <LayoutHeader
             subtitle={`Tema ${lesson.lessonNumber}`}
@@ -200,7 +190,7 @@ export function LessonDetailFeature({
             </Text>
           </Button>
         </View>
-      </Animated.View>
+      </View>
 
       <RecalibrateBottomSheet
         isOpen={isBottomSheetOpen}

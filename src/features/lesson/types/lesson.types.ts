@@ -3,6 +3,7 @@ export interface Activity {
   title: string;
   description: string;
   completed?: boolean;
+  completedAt?: string | null;
   duration?: number;
 }
 
@@ -39,7 +40,7 @@ export interface LessonDto {
   lessonNumber: number;
   title: string;
   progressPercentage?: number;
-  duration?: string;
+  duration?: number | string;
   aiSuggestions?: string;
   activities?: ActivityDto[];
 }
