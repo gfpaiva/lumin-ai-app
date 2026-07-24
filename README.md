@@ -1,6 +1,6 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white) ![React Native](https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB) ![Expo](https://img.shields.io/badge/Expo_v57-000020?style=for-the-badge&logo=expo&logoColor=white) ![Gluestack UI](https://img.shields.io/badge/Gluestack_UI_v5-007ACC?style=for-the-badge&logoColor=white) ![Zustand](https://img.shields.io/badge/Zustand-4A4A55?style=for-the-badge&logoColor=white)
 
-# Lumin.AI — Copiloto Inteligente
+# Lumin.AI — React Native mobile App
 
 > Aplicativo Mobile em **React Native e Expo** desenvolvido para potencializar a gestão escolar e o planejamento pedagógico de professores da rede pública de ensino através de **IA Generativa**.
 
