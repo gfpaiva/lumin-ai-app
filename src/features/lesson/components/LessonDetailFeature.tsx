@@ -146,6 +146,13 @@ export function LessonDetailFeature({
                             color={activity.completed ? "#3b82f6" : "#fff"}
                           />
                         </Pressable>
+                      ) : activity.completed ? (
+                        <View className="flex-row items-center border border-primary bg-primary/20 rounded-full py-2 px-4 self-start opacity-70">
+                          <Text className="font-medium mr-2 text-primary">
+                            Concluído
+                          </Text>
+                          <Check size={16} color="#3b82f6" />
+                        </View>
                       ) : (
                         <>
                           <Pressable
