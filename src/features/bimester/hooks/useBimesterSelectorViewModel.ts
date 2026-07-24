@@ -15,6 +15,7 @@ export function useBimesterSelectorViewModel(
   const selectBimester = bimesterStore((state) => state.selectBimester);
   const [isCompleting, setIsCompleting] = useState(false);
   const completeBimester = bimesterStore((state) => state.completeBimester);
+  const setBimesters = bimesterStore((state) => state.setBimesters);
 
   const selectedBimester = useMemo(
     () => bimesters.find((b) => b.id === selectedBimesterId),
@@ -34,15 +35,16 @@ export function useBimesterSelectorViewModel(
       onClose?.();
 
       try {
-        await bimesterService.completeBimester(id);
+        const updatedBimesters = await bimesterService.completeBimester(id);
         completeBimester(id);
+        setBimesters(updatedBimesters);
       } catch (error) {
         console.error("Failed to complete bimester", error);
       } finally {
         setIsCompleting(false);
       }
     },
-    [completeBimester, bimesterService],
+    [completeBimester, setBimesters, bimesterService],
   );
 
   return {

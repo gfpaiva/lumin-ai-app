@@ -17,7 +17,7 @@ export function BimesterSummaryCard({ bimester }: BimesterSummaryCardProps) {
             Conteúdo lecionado
           </Text>
           <Text className="text-muted-foreground text-sm">
-            {progress.totalLessons} aulas totais
+            {progress.totalLessons} temas totais
           </Text>
         </View>
         <Text className="text-white text-base font-bold">
@@ -32,7 +32,7 @@ export function BimesterSummaryCard({ bimester }: BimesterSummaryCardProps) {
       <View className="flex-row justify-between items-center mb-2">
         <View>
           <Text className="text-muted-foreground text-sm">
-            {progress.classesCount} turmas • {progress.subjectsCount} matérias
+            {progress.classesCount} turmas
           </Text>
         </View>
       </View>

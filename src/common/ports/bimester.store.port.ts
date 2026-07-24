@@ -6,8 +6,6 @@ export interface BimesterStoreState {
   setBimesters: (bimesters: Bimester[]) => void;
   selectBimester: (id: string) => void;
   completeBimester: (id: string) => void;
-  completeBimesterOptimistic: (id: string) => Bimester[]; // returns previous state snapshot for rollback
-  rollbackBimester: (snapshot: Bimester[]) => void;
 }
 
 export type BimesterStorePort = <U>(

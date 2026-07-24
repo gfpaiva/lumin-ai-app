@@ -11,7 +11,8 @@ export class BimesterApiService implements BimesterServicePort {
     return data || [];
   }
 
-  async completeBimester(id: string): Promise<void> {
+  async completeBimester(id: string): Promise<Bimester[]> {
     await this.httpAdapter.patch(`/bimesters/${id}/status`, { status: "done" });
+    return await this.getBimesters();
   }
 }

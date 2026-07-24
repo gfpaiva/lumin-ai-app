@@ -66,22 +66,23 @@ export function BimesterSelectorBottomSheet({
         <BimesterSummaryCard bimester={selectedBimester} />
 
         {/* Botão Concluir */}
-        {isSelectedBimesterCurrent && (
-          <View className="mt-8">
-            <Button
-              onPress={() => {
-                onCompleteBimester(selectedBimester.id);
-              }}
-            >
-              <View className="flex-row items-center gap-2">
-                <Text className="text-white font-medium text-base">
-                  Concluir bimestre
-                </Text>
-                <ChevronRight size={18} color="#FFFFFF" />
-              </View>
-            </Button>
-          </View>
-        )}
+        {selectedBimester.progress.totalLessons !== 0 &&
+          isSelectedBimesterCurrent && (
+            <View className="mt-8">
+              <Button
+                onPress={() => {
+                  onCompleteBimester(selectedBimester.id, onClose);
+                }}
+              >
+                <View className="flex-row items-center gap-2">
+                  <Text className="text-white font-medium text-base">
+                    Concluir bimestre
+                  </Text>
+                  <ChevronRight size={18} color="#FFFFFF" />
+                </View>
+              </Button>
+            </View>
+          )}
       </View>
     </GenericBottomSheet>
   );

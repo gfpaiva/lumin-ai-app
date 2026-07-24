@@ -29,42 +29,13 @@ export const useBimesterStore = create<BimesterStoreState>((set, get) => ({
           state.bimesters[index - 1]?.id === id &&
           bimester.status === "locked"
         ) {
+          state.selectBimester(bimester.id); // Select the next bimester if it was locked
           return { ...bimester, status: "in_progress" } as Bimester;
         }
+
         return bimester;
       });
       return { bimesters: updatedBimesters };
     });
   },
-  completeBimesterOptimistic: (id) => {
-    const previousBimesters = get().bimesters;
-
-    set((state) => {
-      const updatedBimesters = state.bimesters.map((bimester, index) => {
-        if (bimester.id === id) {
-          return {
-            ...bimester,
-            status: "done",
-            progress: { ...bimester.progress },
-          } as Bimester;
-        }
-        // Unlock next bimester
-        if (
-          state.bimesters[index - 1]?.id === id &&
-          bimester.status === "locked"
-        ) {
-          return {
-            ...bimester,
-            status: "in_progress",
-          } as Bimester;
-        }
-        return bimester;
-      });
-
-      return { bimesters: updatedBimesters };
-    });
-
-    return previousBimesters;
-  },
-  rollbackBimester: (snapshot) => set({ bimesters: snapshot }),
 }));
