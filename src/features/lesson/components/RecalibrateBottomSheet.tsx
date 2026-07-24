@@ -67,7 +67,7 @@ export function RecalibrateBottomSheet({
       onClose={onClose}
       title="Recalibrar Atividade"
     >
-      <View className="gap-6 mt-2">
+      <View className="gap-6 pb-6">
         <ChipRadioGroup
           label="Ênfase"
           options={emphasisOptions}

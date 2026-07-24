@@ -2,7 +2,7 @@ import React from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { CheckIcon, Icon } from '@/src/components/ui/icon';
 
-export interface ChipOption {
+interface ChipOption {
   value: string;
   label: string;
 }

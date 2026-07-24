@@ -206,9 +206,6 @@ export const BottomSheetPortal = ({
   enableDynamicSizing = false,
   snapPoints,
   onChange,
-  keyboardBehavior = 'interactive',
-  keyboardBlurBehavior = 'restore',
-  android_keyboardInputMode = 'adjustResize',
   ...props
 }: IBottomSheetPortalProps) => {
   const { bottomSheetRef, handleSheetChanges, isVisible, currentIndex } =
@@ -243,9 +240,6 @@ export const BottomSheetPortal = ({
         snapPoints={memoizedSnapPoints}
         index={validIndex}
         enableDynamicSizing={enableDynamicSizing}
-        keyboardBehavior={keyboardBehavior}
-        keyboardBlurBehavior={keyboardBlurBehavior}
-        android_keyboardInputMode={android_keyboardInputMode}
         onChange={(idx) => {
           handleSheetChanges(idx);
           (onChange as any)?.(idx);
