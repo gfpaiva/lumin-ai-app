@@ -1,19 +1,14 @@
 import { BimesterStorePort } from "@/src/common/ports/bimester.store.port";
-import { HttpPort } from "@/src/common/ports/http.port";
 import { LessonStorePort } from "@/src/common/ports/lesson.store.port";
-import { FetchAdapter } from "@/src/infra/http/fetch.adapter";
 import { useBimesterStore } from "@/src/infra/store/bimester.store";
 import {
   calculateTotalLessonDuration,
   useLessonStore,
 } from "@/src/infra/store/lesson.store";
 import { useEffect, useState } from "react";
-import {
-  mapActivityDtoToDomain,
-  mapClassPlanDtoToDomain,
-  mapLessonDomainToDto,
-} from "../mappers/class-plan.mapper";
-import { ActivityDto, ClassPlanDto, Lesson } from "../types/lesson.types";
+import { LessonApiService } from "../api/lesson.service";
+import { LessonServicePort } from "../api/lesson.service.port";
+import { Lesson } from "../types/lesson.types";
 
 export type RecalibrateParams = {
   activityId: string;
@@ -22,14 +17,14 @@ export type RecalibrateParams = {
   observations: string;
 };
 
-const defaultHttpAdapter = new FetchAdapter();
+const defaultLessonService = new LessonApiService();
 
 export function useLessonDetailViewModel(
   lessonIdentifier: string,
   classId?: string,
   lessonStore: LessonStorePort = useLessonStore,
   bimesterStore: BimesterStorePort = useBimesterStore,
-  httpAdapter: HttpPort = defaultHttpAdapter,
+  lessonService: LessonServicePort = defaultLessonService,
 ) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -70,13 +65,11 @@ export function useLessonDetailViewModel(
         setIsLoading(true);
         setError(null);
       });
-      httpAdapter
-        .get<ClassPlanDto>("/class-plans", {
-          params: { classId: targetClassId, bimesterId: activeBimesterId },
-        })
-        .then((response) => {
-          if (isMounted && response.data) {
-            const domainPlan = mapClassPlanDtoToDomain(response.data);
+
+      lessonService
+        .getClassPlan({ classId: targetClassId, bimesterId: activeBimesterId })
+        .then((domainPlan) => {
+          if (isMounted && domainPlan) {
             setPlan(targetClassId, activeBimesterId, domainPlan);
           }
         })
@@ -101,7 +94,7 @@ export function useLessonDetailViewModel(
   }, [
     plansByClassAndBimester,
     storeKey,
-    httpAdapter,
+    lessonService,
     targetClassId,
     activeBimesterId,
     setPlan,
@@ -136,13 +129,14 @@ export function useLessonDetailViewModel(
     );
 
     try {
-      const response = await httpAdapter.patch<ClassPlanDto>(
-        `/class-plans/${plan.id}/lessons/${lesson.lessonNumber}/activities/${activityId}`,
-        { completed: newCompleted },
-      );
+      const domainPlan = await lessonService.toggleActivityCompletion({
+        planId: plan.id,
+        lessonNumber: lesson.lessonNumber,
+        activityId,
+        completed: newCompleted,
+      });
 
-      if (response.data) {
-        const domainPlan = mapClassPlanDtoToDomain(response.data);
+      if (domainPlan) {
         setPlan(targetClassId, activeBimesterId, domainPlan);
       }
     } catch (err: any) {
@@ -160,17 +154,16 @@ export function useLessonDetailViewModel(
     setIsRecalibrating(true);
     setError(null);
     try {
-      const response = await httpAdapter.post<ActivityDto>(
-        `/class-plans/${plan.id}/lessons/${lesson.lessonNumber}/activities/${params.activityId}/recalibrate`,
-        {
-          emphasis: params.emphasis,
-          complexity: params.complexity,
-          observations: params.observations,
-        },
-      );
+      const updatedActivity = await lessonService.recalibrateActivity({
+        planId: plan.id,
+        lessonNumber: lesson.lessonNumber,
+        activityId: params.activityId,
+        emphasis: params.emphasis,
+        complexity: params.complexity,
+        observations: params.observations,
+      });
 
-      if (response.data) {
-        const updatedActivity = mapActivityDtoToDomain(response.data);
+      if (updatedActivity) {
         updateActivityInLesson(
           targetClassId,
           activeBimesterId,
@@ -207,15 +200,13 @@ export function useLessonDetailViewModel(
     const snapshot = plan;
 
     try {
-      const payload = mapLessonDomainToDto(lesson);
+      const domainPlan = await lessonService.saveLesson({
+        planId: plan.id,
+        lessonNumber: lesson.lessonNumber,
+        lesson,
+      });
 
-      const response = await httpAdapter.put<ClassPlanDto>(
-        `/class-plans/${plan.id}/lessons/${lesson.lessonNumber}`,
-        payload,
-      );
-
-      if (response.data) {
-        const domainPlan = mapClassPlanDtoToDomain(response.data);
+      if (domainPlan) {
         setPlan(targetClassId, activeBimesterId, domainPlan);
       }
     } catch (err: any) {

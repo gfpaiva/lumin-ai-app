@@ -52,4 +52,3 @@ export interface ClassPlanDto {
   theme: string;
   lessons: LessonDto[];
 }
-

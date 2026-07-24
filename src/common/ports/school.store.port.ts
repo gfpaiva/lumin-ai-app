@@ -1,4 +1,4 @@
-import { School } from '../../features/school/types/school.types';
+import { School } from "../../features/school/types/school.types";
 
 export interface SchoolStoreState {
   schools: School[];
@@ -10,4 +10,6 @@ export interface SchoolStoreState {
   incrementClassCount: (schoolId: string) => void;
 }
 
-export type SchoolStorePort = <U>(selector: (state: SchoolStoreState) => U) => U;
+export type SchoolStorePort = <U>(
+  selector: (state: SchoolStoreState) => U,
+) => U;

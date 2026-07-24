@@ -11,8 +11,23 @@ export interface HttpResponse<T = any> {
 
 export interface HttpPort {
   get<T>(url: string, options?: HttpRequestOptions): Promise<HttpResponse<T>>;
-  post<T>(url: string, body?: any, options?: HttpRequestOptions): Promise<HttpResponse<T>>;
-  put<T>(url: string, body?: any, options?: HttpRequestOptions): Promise<HttpResponse<T>>;
-  patch<T>(url: string, body?: any, options?: HttpRequestOptions): Promise<HttpResponse<T>>;
-  delete<T>(url: string, options?: HttpRequestOptions): Promise<HttpResponse<T>>;
+  post<T>(
+    url: string,
+    body?: any,
+    options?: HttpRequestOptions,
+  ): Promise<HttpResponse<T>>;
+  put<T>(
+    url: string,
+    body?: any,
+    options?: HttpRequestOptions,
+  ): Promise<HttpResponse<T>>;
+  patch<T>(
+    url: string,
+    body?: any,
+    options?: HttpRequestOptions,
+  ): Promise<HttpResponse<T>>;
+  delete<T>(
+    url: string,
+    options?: HttpRequestOptions,
+  ): Promise<HttpResponse<T>>;
 }

@@ -9,7 +9,10 @@ export function calculateTotalLessonDuration(activities?: Activity[]): string {
 }
 
 function matchesLesson(lesson: Lesson, identifier: string): boolean {
-  return lesson.id === identifier || String(lesson.lessonNumber) === String(identifier);
+  return (
+    lesson.id === identifier ||
+    String(lesson.lessonNumber) === String(identifier)
+  );
 }
 
 export const useLessonStore = create<LessonStoreState>((set, get) => ({
@@ -46,7 +49,10 @@ export const useLessonStore = create<LessonStoreState>((set, get) => ({
       if (!matchesLesson(lesson, lessonIdentifier)) return lesson;
       const updatedActivities = (lesson.activities || []).map((act) =>
         act.id === activityId
-          ? { ...act, completed: completed !== undefined ? completed : !act.completed }
+          ? {
+              ...act,
+              completed: completed !== undefined ? completed : !act.completed,
+            }
           : act,
       );
       return {
@@ -62,12 +68,7 @@ export const useLessonStore = create<LessonStoreState>((set, get) => ({
       },
     }));
   },
-  updateActivityInLesson: (
-    classId,
-    bimesterId,
-    lessonIdentifier,
-    activity,
-  ) => {
+  updateActivityInLesson: (classId, bimesterId, lessonIdentifier, activity) => {
     const key = `${classId}_${bimesterId}`;
     const plan = get().plansByClassAndBimester[key];
     if (!plan) return;
@@ -134,4 +135,3 @@ export const useLessonStore = create<LessonStoreState>((set, get) => ({
     }));
   },
 }));
-

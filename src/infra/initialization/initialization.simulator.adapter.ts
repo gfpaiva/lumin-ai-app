@@ -1,4 +1,4 @@
-import { InitializationPort } from '@/src/common/ports/initialization.port';
+import { InitializationPort } from "@/src/common/ports/initialization.port";
 
 export class InitializationSimulatorAdapter implements InitializationPort {
   private timeoutMs: number;
@@ -16,4 +16,5 @@ export class InitializationSimulatorAdapter implements InitializationPort {
   }
 }
 
-export const initializationSimulatorAdapter = new InitializationSimulatorAdapter();
+export const initializationSimulatorAdapter =
+  new InitializationSimulatorAdapter();

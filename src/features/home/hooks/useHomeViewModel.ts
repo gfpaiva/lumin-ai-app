@@ -1,22 +1,21 @@
 import { BimesterStorePort } from "@/common/ports/bimester.store.port";
 import { ClassStorePort } from "@/src/common/ports/class.store.port";
-import { HttpPort } from "@/src/common/ports/http.port";
 import { SchoolStorePort } from "@/src/common/ports/school.store.port";
-import { FetchAdapter } from "@/src/infra/http/fetch.adapter";
+import { ClassApiService } from "@/src/features/class/api/class.service";
+import { ClassServicePort } from "@/src/features/class/api/class.service.port";
 import { useBimesterStore } from "@/src/infra/store/bimester.store";
 import { useClassStore } from "@/src/infra/store/class.store";
 import { useSchoolStore } from "@/src/infra/store/school.store";
 import { useRouter } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
-import type { Class } from "../../class/types/class.types";
 
-const defaultHttpAdapter = new FetchAdapter();
+const defaultClassService = new ClassApiService();
 
 export function useHomeViewModel(
   schoolStore: SchoolStorePort = useSchoolStore,
   classStore: ClassStorePort = useClassStore,
   bimesterStore: BimesterStorePort = useBimesterStore,
-  httpAdapter: HttpPort = defaultHttpAdapter,
+  classService: ClassServicePort = defaultClassService,
 ) {
   const router = useRouter();
   const [isClassSheetOpen, setIsClassSheetOpen] = useState(false);
@@ -47,11 +46,11 @@ export function useHomeViewModel(
   useEffect(() => {
     if (selectedSchoolId && !fetchedSchoolIds.includes(selectedSchoolId)) {
       setIsFetchingClasses(true);
-      httpAdapter
-        .get<Class[]>(`/classes?schoolId=${selectedSchoolId}`)
-        .then((res) => {
-          if (res.data) {
-            appendClasses(res.data);
+      classService
+        .getClassesBySchoolId(selectedSchoolId)
+        .then((data) => {
+          if (data) {
+            appendClasses(data);
             markSchoolAsFetched(selectedSchoolId);
           }
         })
@@ -67,7 +66,7 @@ export function useHomeViewModel(
     fetchedSchoolIds,
     appendClasses,
     markSchoolAsFetched,
-    httpAdapter,
+    classService,
   ]);
 
   const filteredClasses = classes.filter(

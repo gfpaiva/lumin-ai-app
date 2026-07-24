@@ -19,9 +19,16 @@ export const useBimesterStore = create<BimesterStoreState>((set, get) => ({
     set((state) => {
       const updatedBimesters = state.bimesters.map((bimester, index) => {
         if (bimester.id === id) {
-          return { ...bimester, status: "done", progress: { ...bimester.progress } } as Bimester;
+          return {
+            ...bimester,
+            status: "done",
+            progress: { ...bimester.progress },
+          } as Bimester;
         }
-        if (state.bimesters[index - 1]?.id === id && bimester.status === "locked") {
+        if (
+          state.bimesters[index - 1]?.id === id &&
+          bimester.status === "locked"
+        ) {
           return { ...bimester, status: "in_progress" } as Bimester;
         }
         return bimester;

@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { ClassStorePort } from "../../../common/ports/class.store.port";
-import { HttpPort } from "../../../common/ports/http.port";
 import { SchoolStorePort } from "../../../common/ports/school.store.port";
-import { FetchAdapter } from "../../../infra/http/fetch.adapter";
 import { useClassStore } from "../../../infra/store/class.store";
 import { useSchoolStore } from "../../../infra/store/school.store";
+import { ClassApiService } from "../api/class.service";
+import { ClassServicePort } from "../api/class.service.port";
 import type {
-  Class,
   EducationLevel,
   EngagementProfile,
   LearningFormat,
@@ -30,27 +29,23 @@ const DEFAULT_FORM_DATA: ClassFormData = {
   learningFormat: "Visual",
 };
 
-const defaultHttpAdapter = new FetchAdapter();
+const defaultClassService = new ClassApiService();
 
 export function useClassFormViewModel(
   isOpen: boolean,
   classStore: ClassStorePort = useClassStore,
   schoolStore: SchoolStorePort = useSchoolStore,
-  httpAdapter: HttpPort = defaultHttpAdapter,
+  classService: ClassServicePort = defaultClassService,
 ) {
   const [step, setStep] = useState<ClassFormStep>(1);
   const [formData, setFormData] = useState<ClassFormData>(DEFAULT_FORM_DATA);
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const addClassOptimistic = classStore((state) => state.addClassOptimistic);
-  const rollbackClass = classStore((state) => state.rollbackClass);
   const classes = classStore((state) => state.classes);
   const setClasses = classStore((state) => state.setClasses);
   const selectedSchoolId = schoolStore((state) => state.selectedSchoolId);
-  const incrementClassCount = schoolStore(
-    (state) => state.incrementClassCount,
-  );
+  const incrementClassCount = schoolStore((state) => state.incrementClassCount);
 
   // Reset form when bottom sheet closes
   useEffect(() => {
@@ -75,8 +70,7 @@ export function useClassFormViewModel(
 
       try {
         onClose();
-        // In a real scenario, we use the returned class with the real backend ID
-        const { data: newClass } = await httpAdapter.post<Class>("/classes", {
+        const newClass = await classService.createClass({
           name: formData.name,
           subject: formData.subject,
           educationLevel: formData.educationLevel,
@@ -99,7 +93,7 @@ export function useClassFormViewModel(
       formData,
       classes,
       setClasses,
-      httpAdapter,
+      classService,
       incrementClassCount,
     ],
   );

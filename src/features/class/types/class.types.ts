@@ -1,8 +1,8 @@
-export type EducationLevel = 'Fundamental' | 'Médio';
+export type EducationLevel = "Fundamental" | "Médio";
 
-export type EngagementProfile = 'Participativa' | 'Focada' | 'Apática';
+export type EngagementProfile = "Participativa" | "Focada" | "Apática";
 
-export type LearningFormat = 'Visual' | 'Manual' | 'Teórico';
+export type LearningFormat = "Visual" | "Manual" | "Teórico";
 
 export interface Class {
   id: string;

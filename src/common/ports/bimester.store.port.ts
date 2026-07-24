@@ -10,4 +10,6 @@ export interface BimesterStoreState {
   rollbackBimester: (snapshot: Bimester[]) => void;
 }
 
-export type BimesterStorePort = <U>(selector: (state: BimesterStoreState) => U) => U;
+export type BimesterStorePort = <U>(
+  selector: (state: BimesterStoreState) => U,
+) => U;

@@ -5,11 +5,10 @@ import {
 } from "../../common/ports/http.port";
 
 export class FetchAdapter implements HttpPort {
-  private readonly baseUrl: string;
   private readonly defaultTimeout = 180000; // 3 min
 
-  constructor() {
-    this.baseUrl = process.env.EXPO_PUBLIC_API_URL || "http://localhost:3000";
+  private get baseUrl(): string {
+    return process.env.EXPO_PUBLIC_API_URL || "http://localhost:3000";
   }
 
   private async request<T>(

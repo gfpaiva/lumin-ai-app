@@ -1,22 +1,21 @@
 import { useCallback, useEffect, useState } from "react";
 import { ClassStorePort } from "../../../common/ports/class.store.port";
-import { HttpPort } from "../../../common/ports/http.port";
 import { SchoolStorePort } from "../../../common/ports/school.store.port";
-import { FetchAdapter } from "../../../infra/http/fetch.adapter";
 import { useClassStore } from "../../../infra/store/class.store";
 import { useSchoolStore } from "../../../infra/store/school.store";
-import { School } from "../types/school.types";
+import { SchoolApiService } from "../api/school.service";
+import { SchoolServicePort } from "../api/school.service.port";
 
 export type ViewState = "list" | "form";
 
-const defaultHttpAdapter = new FetchAdapter();
+const defaultSchoolService = new SchoolApiService();
 
 export function useSchoolViewModel(
   isOpen: boolean,
   initialView: ViewState = "list",
   schoolStore: SchoolStorePort = useSchoolStore,
   classStore: ClassStorePort = useClassStore,
-  httpAdapter: HttpPort = defaultHttpAdapter,
+  schoolService: SchoolServicePort = defaultSchoolService,
 ) {
   const [activeView, setActiveView] = useState<ViewState>(initialView);
   const [isCreatingSchool, setIsCreatingSchool] = useState(false);
@@ -54,9 +53,10 @@ export function useSchoolViewModel(
       setIsCreatingSchool(true);
 
       try {
-        const { data: newSchool } = await httpAdapter.post<School>("/schools", {
+        const newSchool = await schoolService.createSchool({
           name: data.name,
           category: data.category,
+          workload: data.workload,
         });
         setSchools([...schools, newSchool]);
         selectSchool(newSchool.id);
@@ -67,7 +67,7 @@ export function useSchoolViewModel(
         setIsCreatingSchool(false);
       }
     },
-    [schools, setSchools, selectSchool, httpAdapter],
+    [schools, setSchools, selectSchool, schoolService],
   );
 
   return {

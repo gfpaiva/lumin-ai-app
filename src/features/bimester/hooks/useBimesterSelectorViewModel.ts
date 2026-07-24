@@ -1,14 +1,14 @@
 import { BimesterStorePort } from "@/src/common/ports/bimester.store.port";
-import { HttpPort } from "@/src/common/ports/http.port";
-import { FetchAdapter } from "@/src/infra/http/fetch.adapter";
 import { useBimesterStore } from "@/src/infra/store/bimester.store";
 import { useCallback, useMemo, useState } from "react";
+import { BimesterApiService } from "../api/bimester.service";
+import { BimesterServicePort } from "../api/bimester.service.port";
 
-const defaultHttpAdapter = new FetchAdapter();
+const defaultBimesterService = new BimesterApiService();
 
 export function useBimesterSelectorViewModel(
   bimesterStore: BimesterStorePort = useBimesterStore,
-  httpAdapter: HttpPort = defaultHttpAdapter,
+  bimesterService: BimesterServicePort = defaultBimesterService,
 ) {
   const bimesters = bimesterStore((state) => state.bimesters);
   const selectedBimesterId = bimesterStore((state) => state.selectedBimesterId);
@@ -34,7 +34,7 @@ export function useBimesterSelectorViewModel(
       onClose?.();
 
       try {
-        await httpAdapter.patch(`/bimesters/${id}/status`, { status: "done" });
+        await bimesterService.completeBimester(id);
         completeBimester(id);
       } catch (error) {
         console.error("Failed to complete bimester", error);
@@ -42,7 +42,7 @@ export function useBimesterSelectorViewModel(
         setIsCompleting(false);
       }
     },
-    [completeBimester, httpAdapter],
+    [completeBimester, bimesterService],
   );
 
   return {

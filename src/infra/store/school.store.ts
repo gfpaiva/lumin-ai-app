@@ -1,18 +1,19 @@
-import { create } from 'zustand';
-import { SchoolStoreState } from '../../common/ports/school.store.port';
+import { create } from "zustand";
+import { SchoolStoreState } from "../../common/ports/school.store.port";
 
 export const useSchoolStore = create<SchoolStoreState>((set, get) => ({
   schools: [], // initially empty
   selectedSchoolId: null,
-  setSchools: (schools) => set({ 
-    schools,
-    selectedSchoolId: get().selectedSchoolId || schools[0]?.id || null
-  }),
+  setSchools: (schools) =>
+    set({
+      schools,
+      selectedSchoolId: get().selectedSchoolId || schools[0]?.id || null,
+    }),
   selectSchool: (id) => set({ selectedSchoolId: id }),
   addSchoolOptimistic: (school) => {
     const previousSchools = get().schools;
     set((state) => ({
-      schools: [...state.schools, school]
+      schools: [...state.schools, school],
     }));
     return previousSchools;
   },

@@ -1,4 +1,8 @@
-import { Activity, ClassPlan, Lesson } from "../../features/lesson/types/lesson.types";
+import {
+  Activity,
+  ClassPlan,
+  Lesson,
+} from "../../features/lesson/types/lesson.types";
 
 export interface LessonStoreState {
   plansByClassAndBimester: Record<string, ClassPlan>;
@@ -31,5 +35,6 @@ export interface LessonStoreState {
   ) => void;
 }
 
-export type LessonStorePort = <U>(selector: (state: LessonStoreState) => U) => U;
-
+export type LessonStorePort = <U>(
+  selector: (state: LessonStoreState) => U,
+) => U;

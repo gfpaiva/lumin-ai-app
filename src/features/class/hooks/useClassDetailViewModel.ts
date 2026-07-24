@@ -1,18 +1,17 @@
 import { BimesterStorePort } from "@/src/common/ports/bimester.store.port";
 import { ClassStorePort } from "@/src/common/ports/class.store.port";
-import { HttpPort } from "@/src/common/ports/http.port";
 import { LessonStorePort } from "@/src/common/ports/lesson.store.port";
 import { SchoolStorePort } from "@/src/common/ports/school.store.port";
-import { mapClassPlanDtoToDomain } from "@/src/features/lesson/mappers/class-plan.mapper";
-import { ClassPlanDto, Lesson } from "@/src/features/lesson/types/lesson.types";
-import { FetchAdapter } from "@/src/infra/http/fetch.adapter";
+import { Lesson } from "@/src/features/lesson/types/lesson.types";
 import { useBimesterStore } from "@/src/infra/store/bimester.store";
 import { useClassStore } from "@/src/infra/store/class.store";
 import { useLessonStore } from "@/src/infra/store/lesson.store";
 import { useSchoolStore } from "@/src/infra/store/school.store";
 import { useCallback, useEffect, useState } from "react";
+import { ClassApiService } from "../api/class.service";
+import { ClassServicePort } from "../api/class.service.port";
 
-const defaultHttpAdapter = new FetchAdapter();
+const defaultClassService = new ClassApiService();
 
 export function useClassDetailViewModel(
   classId: string,
@@ -20,7 +19,7 @@ export function useClassDetailViewModel(
   classStore: ClassStorePort = useClassStore,
   schoolStore: SchoolStorePort = useSchoolStore,
   bimesterStore: BimesterStorePort = useBimesterStore,
-  httpAdapter: HttpPort = defaultHttpAdapter,
+  classService: ClassServicePort = defaultClassService,
 ) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -54,14 +53,11 @@ export function useClassDetailViewModel(
     setError(null);
 
     try {
-      const response = await httpAdapter.get<ClassPlanDto>("/class-plans", {
-        params: { classId, bimesterId: selectedBimesterId },
+      const domainPlan = await classService.getClassPlan({
+        classId,
+        bimesterId: selectedBimesterId,
       });
-
-      if (response.data) {
-        const domainPlan = mapClassPlanDtoToDomain(response.data);
-        setPlan(classId, selectedBimesterId, domainPlan);
-      }
+      setPlan(classId, selectedBimesterId, domainPlan);
     } catch (err: any) {
       console.error("Error fetching class plan:", err);
       setError(err?.message || "Erro ao carregar o plano de aula");
@@ -73,7 +69,7 @@ export function useClassDetailViewModel(
     selectedBimesterId,
     storeKey,
     plansByClassAndBimester,
-    httpAdapter,
+    classService,
     setPlan,
   ]);
 

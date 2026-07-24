@@ -1,4 +1,4 @@
-import { Class } from '../../features/class/types/class.types';
+import { Class } from "../../features/class/types/class.types";
 
 export interface ClassStoreState {
   classes: Class[];
