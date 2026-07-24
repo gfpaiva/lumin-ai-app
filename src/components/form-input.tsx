@@ -5,6 +5,7 @@ import {
   FormControlLabelText,
 } from '@/src/components/ui/form-control';
 import { Input, InputField } from '@/src/components/ui/input';
+import { BottomSheetTextInput } from '@/src/components/ui/bottomsheet';
 import { KeyboardTypeOptions } from 'react-native';
 
 interface FormInputProps {
@@ -15,6 +16,7 @@ interface FormInputProps {
   keyboardType?: KeyboardTypeOptions;
   className?: string;
   multiline?: boolean;
+  isBottomSheetInput?: boolean;
 }
 
 export function FormInput({
@@ -25,6 +27,7 @@ export function FormInput({
   keyboardType = 'default',
   className = '',
   multiline = false,
+  isBottomSheetInput = true,
 }: FormInputProps) {
   return (
     <FormControl className={className}>
@@ -34,15 +37,27 @@ export function FormInput({
         </FormControlLabelText>
       </FormControlLabel>
       <Input className="border-t-0 border-l-0 border-r-0 border-b-[1px] border-b-surface-neutral/30 rounded-none p-2 mt-2 h-auto min-h-0 bg-transparent">
-        <InputField
-          value={value}
-          onChangeText={onChangeText}
-          placeholder={placeholder}
-          keyboardType={keyboardType}
-          multiline={multiline}
-          className="text-white text-xl font-semibold px-0 py-2 h-auto leading-[1.2] bg-transparent"
-          placeholderTextColor="#666"
-        />
+        {isBottomSheetInput ? (
+          <BottomSheetTextInput
+            value={value}
+            onChangeText={onChangeText}
+            placeholder={placeholder}
+            keyboardType={keyboardType}
+            multiline={multiline}
+            className="text-white text-xl font-semibold px-0 py-2 h-auto leading-[1.2] bg-transparent border-0 rounded-none shadow-none dark:bg-transparent"
+            placeholderTextColor="#666"
+          />
+        ) : (
+          <InputField
+            value={value}
+            onChangeText={onChangeText}
+            placeholder={placeholder}
+            keyboardType={keyboardType}
+            multiline={multiline}
+            className="text-white text-xl font-semibold px-0 py-2 h-auto leading-[1.2] bg-transparent"
+            placeholderTextColor="#666"
+          />
+        )}
       </Input>
     </FormControl>
   );
