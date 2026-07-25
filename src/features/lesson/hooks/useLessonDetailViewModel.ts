@@ -5,6 +5,8 @@ import {
   calculateTotalLessonDuration,
   useLessonStore,
 } from "@/src/infra/store/lesson.store";
+import { BimesterApiService } from "@/src/features/bimester/api/bimester.service";
+import { BimesterServicePort } from "@/src/features/bimester/api/bimester.service.port";
 import { useEffect, useState } from "react";
 import { LessonApiService } from "../api/lesson.service";
 import { LessonServicePort } from "../api/lesson.service.port";
@@ -18,6 +20,7 @@ export type RecalibrateParams = {
 };
 
 const defaultLessonService = new LessonApiService();
+const defaultBimesterService = new BimesterApiService();
 
 export function useLessonDetailViewModel(
   lessonIdentifier: string,
@@ -25,12 +28,14 @@ export function useLessonDetailViewModel(
   lessonStore: LessonStorePort = useLessonStore,
   bimesterStore: BimesterStorePort = useBimesterStore,
   lessonService: LessonServicePort = defaultLessonService,
+  bimesterService: BimesterServicePort = defaultBimesterService,
 ) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const bimesters = bimesterStore((state) => state.bimesters);
   const selectedBimesterId = bimesterStore((state) => state.selectedBimesterId);
+  const setBimesters = bimesterStore((state) => state.setBimesters);
 
   const plansByClassAndBimester = lessonStore(
     (state) => state.plansByClassAndBimester,
@@ -139,6 +144,21 @@ export function useLessonDetailViewModel(
       if (domainPlan) {
         setPlan(targetClassId, activeBimesterId, domainPlan);
       }
+
+      // Revalidate bimesters in background (fire-and-forget)
+      bimesterService
+        .getBimesters()
+        .then((updatedBimesters) => {
+          if (updatedBimesters && updatedBimesters.length > 0) {
+            setBimesters(updatedBimesters);
+          }
+        })
+        .catch((err) => {
+          console.debug(
+            "[Background Revalidate] Error fetching bimesters after activity toggle:",
+            err,
+          );
+        });
     } catch (err: any) {
       console.error("Error toggling activity completion:", err);
       rollbackPlan(targetClassId, activeBimesterId, snapshot);
