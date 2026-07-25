@@ -58,6 +58,12 @@ export function useLessonDetailViewModel(
     bimesters[0]?.id ||
     "";
 
+  const selectedBimester = bimesters.find((b) => b.id === activeBimesterId);
+
+  const isReadOnly = Boolean(
+    selectedBimester && selectedBimester.status !== "in_progress",
+  );
+
   const targetClassId = classId || "class-1";
   const storeKey = `${targetClassId}_${activeBimesterId}`;
   const plan = plansByClassAndBimester[storeKey];
@@ -115,11 +121,12 @@ export function useLessonDetailViewModel(
   const [isEditing, setIsEditing] = useState(false);
 
   const toggleEditMode = () => {
+    if (isReadOnly) return;
     setIsEditing((prev) => !prev);
   };
 
   const toggleActivityCompletion = async (activityId: string) => {
-    if (!plan || !lesson) return;
+    if (isReadOnly || !plan || !lesson) return;
 
     const targetActivity = activities.find((act) => act.id === activityId);
     const newCompleted = targetActivity ? !targetActivity.completed : true;
@@ -240,6 +247,7 @@ export function useLessonDetailViewModel(
     lesson,
     activities,
     isEditing,
+    isReadOnly,
     isRecalibrating,
     isLoading,
     error,

@@ -22,6 +22,7 @@ export function LessonDetailFeature({
     lesson,
     activities,
     isEditing,
+    isReadOnly,
     toggleEditMode,
     saveChanges,
     toggleActivityCompletion,
@@ -85,7 +86,11 @@ export function LessonDetailFeature({
                     : ""
                 }`}
               >
-                {isEditing ? "Modo edição 👀" : "Sugestões geradas com IA ✨"}
+                {isReadOnly
+                  ? "Modo leitura (Bimestre concluído) 🔒"
+                  : isEditing
+                    ? "Modo edição 👀"
+                    : "Sugestões geradas com IA ✨"}
               </Tag>
               {typeof lesson.aiSuggestions === "string" &&
                 lesson.aiSuggestions.trim().length > 0 && (
@@ -131,7 +136,29 @@ export function LessonDetailFeature({
 
                   <View className="flex-row items-center justify-between gap-3 flex-wrap">
                     <View className="flex-row items-center gap-3 flex-wrap">
-                      {!isEditing ? (
+                      {isReadOnly ? (
+                        <View
+                          className={`flex-row items-center border rounded-full py-2 px-4 self-start ${
+                            activity.completed
+                              ? "border-primary bg-primary/20"
+                              : "border-surface-neutral bg-transparent opacity-80"
+                          }`}
+                        >
+                          <Text
+                            className={`font-medium mr-2 ${
+                              activity.completed
+                                ? "text-primary"
+                                : "text-foreground"
+                            }`}
+                          >
+                            {activity.completed ? "Concluído" : "Concluir"}
+                          </Text>
+                          <Check
+                            size={16}
+                            color={activity.completed ? "#3b82f6" : "#fff"}
+                          />
+                        </View>
+                      ) : !isEditing ? (
                         <Pressable
                           onPress={() => toggleActivityCompletion(activity.id)}
                           className={`flex-row items-center border rounded-full py-2 px-4 self-start ${activity.completed ? "border-primary bg-primary/20" : "border-surface-neutral bg-transparent"}`}
@@ -190,13 +217,15 @@ export function LessonDetailFeature({
             </View>
           )}
         </ScrollView>
-        <View className="pt-4 pb-2">
-          <Button onPress={isEditing ? saveChanges : toggleEditMode}>
-            <Text className="text-foreground font-medium text-lg">
-              {isEditing ? "Salvar alterações" : "Customizar ✨"}
-            </Text>
-          </Button>
-        </View>
+        {!isReadOnly && (
+          <View className="pt-4 pb-2">
+            <Button onPress={isEditing ? saveChanges : toggleEditMode}>
+              <Text className="text-foreground font-medium text-lg">
+                {isEditing ? "Salvar alterações" : "Customizar ✨"}
+              </Text>
+            </Button>
+          </View>
+        )}
       </View>
 
       <RecalibrateBottomSheet
